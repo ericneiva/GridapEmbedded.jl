@@ -65,7 +65,6 @@ module ModalC0AgFEMTests
     Ω_bg = Triangulation(bgmodel)
     amodel = DiscreteModel(cutgeo,geom,(CUT,IN))
     Ω = Triangulation(amodel)
-    Ωᵐ = Triangulation(cutgeo)
     Γ = EmbeddedBoundary(cutgeo)
 
     n_Γ = get_normal_vector(Γ)
@@ -76,12 +75,9 @@ module ModalC0AgFEMTests
     else
       cdeg, degw, degh, dege = (2*k+1)*D, max(2*k-1,2), 2*k, 2*k+2
     end
-    # dΩ = Measure(MomentFittingQuad(Ω,cutgeo,degw))
-    # dH = Measure(MomentFittingQuad(Ω,cutgeo,degh))
-    # dO = Measure(MomentFittingQuad(Ω,cutgeo,dege))
-    dΩ = Measure(Ωᵐ,cdeg,degw)
-    dH = Measure(Ωᵐ,cdeg,degh)
-    dO = Measure(Ωᵐ,cdeg,dege)
+    dΩ = Measure(MomentFittingQuad(Ω,cutgeo,degw))
+    dH = Measure(MomentFittingQuad(Ω,cutgeo,degh))
+    dO = Measure(MomentFittingQuad(Ω,cutgeo,dege))
     dΓ = Measure(Γ,cdeg)
 
     γd = 5.0*k^2
@@ -102,9 +98,9 @@ module ModalC0AgFEMTests
     V = AgFEMSpace(Vstd,aggregates,modalC0)
     U = TrialFESpace(V)
 
-    cell_matvec, bface_matvec = compute_contributions(U,V,a,l,Ωᵐ,Γ)
+    cell_matvec, bface_matvec = compute_contributions(U,V,a,l,Ω,Γ)
     cell_matvec, ccell_to_bgcell =
-      combine_cell_and_bface_contribs(Ω_bg,Ωᵐ,Γ,cell_matvec,bface_matvec)
+      combine_cell_and_bface_contribs(Ω_bg,Ω,Γ,cell_matvec,bface_matvec)
     cell_matvec = attach_constraints_cols(U,cell_matvec,ccell_to_bgcell)
     cell_matvec = attach_constraints_rows(V,cell_matvec,ccell_to_bgcell)
 
@@ -143,9 +139,9 @@ module ModalC0AgFEMTests
       V = AgFEMSpace(Vstd,aggregates,lagrangian)
       U = TrialFESpace(V)
 
-      cell_matvec, bface_matvec = compute_contributions(U,V,a,l,Ωᵐ,Γ)
+      cell_matvec, bface_matvec = compute_contributions(U,V,a,l,Ω,Γ)
       cell_matvec, ccell_to_bgcell =
-        combine_cell_and_bface_contribs(Ω_bg,Ωᵐ,Γ,cell_matvec,bface_matvec)
+        combine_cell_and_bface_contribs(Ω_bg,Ω,Γ,cell_matvec,bface_matvec)
       cell_matvec = attach_constraints_cols(U,cell_matvec,ccell_to_bgcell)
       cell_matvec = attach_constraints_rows(V,cell_matvec,ccell_to_bgcell)
 
