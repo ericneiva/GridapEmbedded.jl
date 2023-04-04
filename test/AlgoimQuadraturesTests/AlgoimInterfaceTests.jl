@@ -16,7 +16,7 @@ function run_case_raw_point(degree,phase)
   xmin = Point(-1.1,-1.1)
   xmax = Point(1.1,1.1)
 
-  @time _, weights = fill_quad_data(phi,xmin,xmax,phase,degree)
+  _, weights = fill_quad_data(phi,xmin,xmax,phase,degree)
 
   s = ∑(weights)
   if phase == IN
