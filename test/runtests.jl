@@ -19,6 +19,8 @@ if QHULL_LOADED
 
   @time @testset "AgFEM" begin include("AgFEMTests/runtests.jl") end
 
+  @time @testset "AlgoimQuadratures" begin include("AlgoimQuadraturesTests/runtests.jl") end
+
   include(joinpath(@__DIR__,"..","examples","runexamples.jl"))
 
 else
