@@ -18,8 +18,6 @@ version = "0.3.4"
 [[deps.Algoim]]
 deps = ["CxxWrap", "LinearAlgebra", "StaticArrays", "algoimWrapper_jll"]
 git-tree-sha1 = "ff458342cb7c820d81c041d2e884d945c14fb812"
-repo-rev = "main"
-repo-url = "https://github.com/ericneiva/Algoim.jl"
 uuid = "0eb9048c-21de-4c7a-bfac-056de1940b74"
 version = "0.1.0"
 
