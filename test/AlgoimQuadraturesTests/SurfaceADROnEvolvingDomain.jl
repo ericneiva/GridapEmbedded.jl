@@ -27,15 +27,19 @@ u(t::Real) = x -> u(x,t)
 
 ∇u(x,t) = ∇(y -> u(t)(y),x)
 
-∇ˢu(x,t) = u(x,t) - ∇φ(x,t)⊗(∇φ(x,t)⋅u(x,t))
-Hˢu(x,t) = ∇ˢu(x,t) - ∇φ(x,t)⊗(∇φ(x,t)⋅∇ˢu(x,t))
-Δˢu(x,t) = tr(Hˢu(x,t))
+∇ˢu(x,t)  = ∇u(x,t) - ∇φ(x,t)⊗(∇φ(x,t)⋅∇u(x,t))
+∇ˢu(t::Real) = x -> ∇ˢu(x,t)
+
+∇∇ˢu(x,t) = ∇(y -> ∇ˢu(t)(y),x)
+∇ˢ∇ˢu(x,t) = ∇∇ˢu(x,t) - ∇φ(x,t)⊗(∇φ(x,t)⋅∇∇ˢu(x,t))
+
+Δˢu(x,t) = tr(∇ˢ∇ˢu(x,t))
 
 # Advection field
 b = VectorValue(1.0,1.0)/√(2.0)
 
 # Source term
-f(x,t) = ∂t(u)(t)(x) + b⋅∇u(x,t) - Δˢu(x,t) # (∇ˢ⋅b) u = 0
+f(x,t) = ∂t(u)(t)(x) + b⋅∇ˢu(x,t) - Δˢu(x,t) # (∇ˢ⋅b) u = 0
 f(t::Real) = x -> f(x,t)
 
 function run_trace_fem(nx::Int,ny::Int)
@@ -179,5 +183,6 @@ function run_trace_fem(nx::Int,ny::Int)
 end
 
 run_trace_fem(30,30)
+run_trace_fem(60,60)
 
 end # module
