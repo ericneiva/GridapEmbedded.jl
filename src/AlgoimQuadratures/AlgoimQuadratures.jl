@@ -209,4 +209,23 @@ function aggregate_narrow_band(bgtrian,cell_to_is_narrow,cell_to_active,cell_to_
     in_or_out,cell_to_coords,cell_to_faces,face_to_cells)
 end
 
+using Gridap.Geometry: get_cell_to_parent_cell
+using Gridap.CellData: get_cell_quadrature
+using GridapEmbedded.AgFEM: compute_subcell_bbox
+import GridapEmbedded.AgFEM: init_bboxes
+
+function init_bboxes(cell_to_coords,cut_measure::Measure)
+  bgcell_to_cbboxes = init_bboxes(cell_to_coords)
+  quad = get_cell_quadrature(cut_measure)
+  trian = get_triangulation(quad)
+  model = get_active_model(trian)
+  ccell_to_bgcell = get_cell_to_parent_cell(model)
+  for (cc,bc) in enumerate(ccell_to_bgcell)
+    bgcell_to_cbboxes[bc] = compute_subcell_bbox(quad.cell_point[cc])
+  end
+  bgcell_to_cbboxes
+end
+
+export init_bboxes
+
 end # module
