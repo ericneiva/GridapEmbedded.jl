@@ -54,3 +54,5 @@ end
 @publish AlgoimQuadratures AlgoimCallLevelSetFunction
 @publish AlgoimQuadratures TriangulationAndMeasure
 @publish AlgoimQuadratures normal
+
+@publish MomentFittedQuadratures momentfitted
