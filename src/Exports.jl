@@ -49,11 +49,12 @@ end
 @publish AgFEM compute_cell_bboxes
 @publish AgFEM compute_cell_to_dface_bboxes
 
-@publish AlgoimQuadratures algoim
-@publish AlgoimQuadratures fill_quad_data
-@publish AlgoimQuadratures AlgoimCallLevelSetFunction
-@publish AlgoimQuadratures TriangulationAndMeasure
-@publish AlgoimQuadratures normal
-@publish AlgoimQuadratures init_bboxes
+@publish AlgoimUtils algoim
+@publish AlgoimUtils fill_quad_data
+@publish AlgoimUtils AlgoimCallLevelSetFunction
+@publish AlgoimUtils TriangulationAndMeasure
+@publish AlgoimUtils normal
+@publish AlgoimUtils init_bboxes
+@publish AlgoimUtils fill_cpp_data
 
 @publish MomentFittedQuadratures momentfitted

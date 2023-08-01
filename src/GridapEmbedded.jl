@@ -10,7 +10,7 @@ include("AgFEM/AgFEM.jl")
 
 include("MomentFittedQuadratures/MomentFittedQuadratures.jl")
 
-include("AlgoimQuadratures/AlgoimQuadratures.jl")
+include("AlgoimUtils/AlgoimUtils.jl")
 
 include("Exports.jl")
 
