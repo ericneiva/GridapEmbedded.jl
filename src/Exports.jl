@@ -56,5 +56,7 @@ end
 @publish AlgoimUtils normal
 @publish AlgoimUtils init_bboxes
 @publish AlgoimUtils fill_cpp_data
+@publish AlgoimUtils fill_cpp_data_raw
+@publish AlgoimUtils compute_closest_point_projections
 
 @publish MomentFittedQuadratures momentfitted

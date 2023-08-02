@@ -15,7 +15,8 @@ using Algoim: lsbuffer, lsbufferφ, lsbuffer∇φ
 using Gridap.Helpers
 using Gridap.ReferenceFEs
 using Gridap.Arrays: collect1d, CompressedArray
-using Gridap.Geometry: Grid, get_reffes
+using Gridap.Geometry: get_cartesian_descriptor, Grid, get_reffes
+using Gridap.Adaptivity
 using Gridap.Fields: testitem
 using Gridap.CellData: GenericCellField, get_data
 using Gridap.Geometry: get_faces, get_grid_topology
@@ -35,8 +36,6 @@ export is_cell_active
 export restrict_measure
 export aggregate_narrow_band
 
-export fill_cpp_data
-
 struct Algoim <: QuadratureName end
 const algoim = Algoim()
 
@@ -48,7 +47,7 @@ function AlgoimCallLevelSetFunction(φ::CellField,∇φ::CellField)
   cellφ = get_array(φ)
   cell∇φ = get_array(∇φ)
   cache_φ = (cellφ,array_cache(cellφ),return_cache(testitem(cellφ),xφ))
-  cache_∇φ = (cell∇φ,array_cache(cell∇φ),return_cache(testitem(cell∇φ),x∇φ),)
+  cache_∇φ = (cell∇φ,array_cache(cell∇φ),return_cache(testitem(cell∇φ),x∇φ))
   update_lsbuffer!(cache_φ,cache_∇φ)
   AlgoimCallLevelSetFunction{typeof(φ),typeof(∇φ),typeof(cache_φ),typeof(cache_∇φ)}(φ,∇φ,cache_φ,cache_∇φ)
 end
@@ -229,5 +228,25 @@ function init_bboxes(cell_to_coords,cut_measure::Measure)
 end
 
 export init_bboxes
+
+function compute_closest_point_projections(model::CartesianDiscreteModel,φ,num_refinements;cppdegree=2)
+  ( num_refinements > 1 ) && begin
+    model = refine(model,num_refinements)
+    @error "Need to map nodes from lexicographic order to VEF order"
+  end
+  cdesc = get_cartesian_descriptor(model)
+  partition = Int32[cdesc.partition...]
+  xmin = cdesc.origin
+  xmax = xmin + Point(cdesc.sizes .* partition)
+  fill_cpp_data(φ,partition,xmin,xmax,cppdegree)
+end
+
+function compute_closest_point_projections(Ω,φ,num_refinements;cppdegree=2)
+  compute_closest_point_projections(get_active_model(Ω),φ,num_refinements,cppdegree=2)
+end
+
+export fill_cpp_data
+export fill_cpp_data_raw
+export compute_closest_point_projections
 
 end # module
