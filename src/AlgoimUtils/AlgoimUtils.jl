@@ -241,8 +241,8 @@ function compute_closest_point_projections(model::CartesianDiscreteModel,φ,num_
   fill_cpp_data(φ,partition,xmin,xmax,cppdegree,limitstol)
 end
 
-function compute_closest_point_projections(Ω,φ,num_refinements;cppdegree=2)
-  compute_closest_point_projections(get_active_model(Ω),φ,num_refinements,cppdegree=2)
+function compute_closest_point_projections(Ω::Triangulation,φ,num_refinements;cppdegree=2,limitstol=1.0e-8)
+  compute_closest_point_projections(get_active_model(Ω),φ,num_refinements,cppdegree=2,limitstol=1.0e-8)
 end
 
 export fill_cpp_data
