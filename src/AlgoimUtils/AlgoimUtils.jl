@@ -58,7 +58,7 @@ function update_lsbuffer!(cache_φ::Tuple,cache_∇φ::Tuple)
     (carr,cgetindex,ceval) = cache_φ
     evaluate!(ceval,getindex!(cgetindex,carr,Int(i)),_p)
   end
-  cpp∇φ(p,i) = begin
+  cpp∇φ(p,i::Float32) = begin
     _p = Point(to_const_array(p))
     (carr,cgetindex,ceval) = cache_∇φ
     _val = evaluate!(ceval,getindex!(cgetindex,carr,Int(i)),_p)
@@ -229,7 +229,7 @@ end
 
 export init_bboxes
 
-function compute_closest_point_projections(model::CartesianDiscreteModel,φ,num_refinements;cppdegree=2)
+function compute_closest_point_projections(model::CartesianDiscreteModel,φ,num_refinements;cppdegree=2,limitstol=1.0e-8)
   ( num_refinements > 1 ) && begin
     model = refine(model,num_refinements)
     @error "Need to map nodes from lexicographic order to VEF order"
@@ -238,7 +238,7 @@ function compute_closest_point_projections(model::CartesianDiscreteModel,φ,num_
   partition = Int32[cdesc.partition...]
   xmin = cdesc.origin
   xmax = xmin + Point(cdesc.sizes .* partition)
-  fill_cpp_data(φ,partition,xmin,xmax,cppdegree)
+  fill_cpp_data(φ,partition,xmin,xmax,cppdegree,limitstol)
 end
 
 function compute_closest_point_projections(Ω,φ,num_refinements;cppdegree=2)
