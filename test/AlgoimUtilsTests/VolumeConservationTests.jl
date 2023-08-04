@@ -1,4 +1,4 @@
-module ClosestPointTests
+module VolumeConservationTests
 
 using Test
 using CxxWrap
