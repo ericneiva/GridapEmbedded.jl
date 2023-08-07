@@ -231,7 +231,10 @@ end
 
 export init_bboxes
 
-function compute_closest_point_projections(model::CartesianDiscreteModel,φ,num_refinements;cppdegree=2,limitstol=1.0e-8)
+function compute_closest_point_projections(model::CartesianDiscreteModel,
+                                           φ::AlgoimCallLevelSetFunction,
+                                           num_refinements::Int;
+                                           cppdegree::Int=2,limitstol::Float64=1.0e-8)
   ( num_refinements > 1 ) && begin
     model = refine(model,num_refinements)
     @error "Need to map nodes from lexicographic order to VEF order"
@@ -243,8 +246,8 @@ function compute_closest_point_projections(model::CartesianDiscreteModel,φ,num_
   fill_cpp_data(φ,partition,xmin,xmax,cppdegree,limitstol)
 end
 
-function compute_closest_point_projections(Ω::Triangulation,φ,num_refinements;cppdegree=2,limitstol=1.0e-8)
-  compute_closest_point_projections(get_active_model(Ω),φ,num_refinements,cppdegree=2,limitstol=1.0e-8)
+function compute_closest_point_projections(Ω::Triangulation,φ,num_refinements;cppdegree::Int=2,limitstol::Float64=1.0e-8)
+  compute_closest_point_projections(get_active_model(Ω),φ,num_refinements,cppdegree=cppdegree,limitstol=limitstol)
 end
 
 export fill_cpp_data
