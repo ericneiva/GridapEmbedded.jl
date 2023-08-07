@@ -18,7 +18,9 @@ using Gridap.Arrays: collect1d, CompressedArray
 using Gridap.Geometry: get_cartesian_descriptor, Grid, get_reffes
 using Gridap.Adaptivity
 using Gridap.Fields: testitem
+using Gridap.CellData
 using Gridap.CellData: GenericCellField, get_data
+using Gridap.CellData: _point_to_cell_cache, _point_to_cell!
 using Gridap.Geometry: get_faces, get_grid_topology
 
 using GridapEmbedded.Interfaces
@@ -248,5 +250,36 @@ end
 export fill_cpp_data
 export fill_cpp_data_raw
 export compute_closest_point_projections
+
+function compute_normal_displacement(
+    cps::AbstractVector{<:Point},
+    phi::AlgoimCallLevelSetFunction,
+    fun::FEFunction,
+    dt::Float64,
+    Ω::Triangulation)
+  searchmethod = KDTreeSearch()
+  cache1 = _point_to_cell_cache(searchmethod,Ω)
+  x_to_cell(x) = _point_to_cell!(cache1, x)
+  point_to_cell = lazy_map(x_to_cell, cps)
+  cell_to_points, _ = make_inverse_table(point_to_cell, num_cells(Ω))
+  cell_to_xs = lazy_map(Broadcasting(Reindex(cps)), cell_to_points)
+  cell_point_xs = CellPoint(cell_to_xs, Ω, PhysicalDomain())
+  disp = normal(phi,Ω) ⋅ fun
+  cell_point_disp = evaluate(disp,cell_point_xs)
+  cache_vals = array_cache(cell_point_disp)
+  cache_ctop = array_cache(cell_to_points)
+  disps = zeros(Float64,length(cps))
+  for cell in 1:length(cell_to_points)
+    vals = getindex!(cache_vals,cell_point_disp,cell)
+    pts = getindex!(cache_ctop,cell_to_points,cell)
+    for (i,pt) in enumerate(pts)
+      val = vals[i]
+      disps[pt] = dt * val
+    end
+  end
+  disps
+end
+
+export compute_normal_displacement
 
 end # module
