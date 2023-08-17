@@ -257,7 +257,7 @@ export compute_closest_point_projections
 function compute_normal_displacement(
     cps::AbstractVector{<:Point},
     phi::AlgoimCallLevelSetFunction,
-    fun::FEFunction,
+    fun,
     dt::Float64,
     Ω::Triangulation)
   searchmethod = KDTreeSearch()
@@ -273,8 +273,8 @@ function compute_normal_displacement(
   cache_ctop = array_cache(cell_to_points)
   disps = zeros(Float64,length(cps))
   for cell in 1:length(cell_to_points)
-    vals = getindex!(cache_vals,cell_point_disp,cell)
     pts = getindex!(cache_ctop,cell_to_points,cell)
+    vals = getindex!(cache_vals,cell_point_disp,cell)
     for (i,pt) in enumerate(pts)
       val = vals[i]
       disps[pt] = dt * val
