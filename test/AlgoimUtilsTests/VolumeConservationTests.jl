@@ -50,10 +50,10 @@ function run_case(n::Int,degree::Int,cppdegree::Int)
   gₕ = interpolate_everywhere(g,W)
 
   dt = 1.0
-  _phi₂ = dt * (gₕ(cps).⋅normal(phi,Ω)(cps))
+  _phi₂ = compute_normal_displacement(cps,phi,gₕ,dt,Ω)
+  _phi₂ = get_free_dof_values(fₕ) - _phi₂
   _phi₂ = FEFunction(V,_phi₂)
   # writevtk(Ω,"bres_2",cellfields=["phi"=>_phi₂])
-  _phi₂ = fₕ - _phi₂
   phi₂ = AlgoimCallLevelSetFunction(_phi₂,∇(_phi₂))
 
   squad = Quadrature(algoim,phi₂,degree,phase=CUT)
