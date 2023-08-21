@@ -2,7 +2,7 @@
 
 julia_version = "1.9.2"
 manifest_format = "2.0"
-project_hash = "73b9e4932cad033e03c07d1a8ce123095a6838d3"
+project_hash = "3f1a3b0f4c6dc741b99b08a531ad2e73332eb05b"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -35,7 +35,7 @@ weakdeps = ["StaticArrays"]
 
 [[deps.Algoim]]
 deps = ["CxxWrap", "LinearAlgebra", "StaticArrays", "algoimWrapper_jll"]
-git-tree-sha1 = "0efa2c34226199aa7646edf6b9a055d9d5069029"
+git-tree-sha1 = "376015a1db4c0d17bfe923802f0f21ccdb6467f8"
 repo-rev = "main"
 repo-url = "https://github.com/ericneiva/Algoim.jl.git"
 uuid = "0eb9048c-21de-4c7a-bfac-056de1940b74"
@@ -88,9 +88,10 @@ version = "0.8.18"
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
 
 [[deps.AutoHashEquals]]
-git-tree-sha1 = "45bb6705d93be619b81451bb2006b7ee5d4e4453"
+deps = ["Pkg"]
+git-tree-sha1 = "7fc4d1532a3df01af51bae5c1d20389f5aeea086"
 uuid = "15f4f7f2-30c1-5605-9d31-71845cf9641f"
-version = "0.2.0"
+version = "1.0.0"
 
 [[deps.BSON]]
 git-tree-sha1 = "2208958832d6e1b59e49f53697483a84ca8d664e"
@@ -160,9 +161,9 @@ version = "0.13.4"
 
 [[deps.DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
-git-tree-sha1 = "cf25ccb972fec4e4817764d01c82386ae94f77b4"
+git-tree-sha1 = "3dbd312d370723b6bb43ba9d02fc36abade4518d"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-version = "0.18.14"
+version = "0.18.15"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -256,9 +257,9 @@ version = "2.21.1"
 
 [[deps.ForwardDiff]]
 deps = ["CommonSubexpressions", "DiffResults", "DiffRules", "LinearAlgebra", "LogExpFunctions", "NaNMath", "Preferences", "Printf", "Random", "SpecialFunctions"]
-git-tree-sha1 = "00e252f4d706b3d55a8863432e742bf5717b498d"
+git-tree-sha1 = "cf0fe81336da9fb90944683b8c41984b08793dad"
 uuid = "f6369f11-7733-5829-9624-2563aa707210"
-version = "0.10.35"
+version = "0.10.36"
 weakdeps = ["StaticArrays"]
 
     [deps.ForwardDiff.extensions]
@@ -270,11 +271,17 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.Gridap]]
 deps = ["AbstractTrees", "BSON", "BlockArrays", "Combinatorics", "DataStructures", "DocStringExtensions", "FastGaussQuadrature", "FileIO", "FillArrays", "ForwardDiff", "JLD2", "JSON", "LineSearches", "LinearAlgebra", "NLsolve", "NearestNeighbors", "PolynomialBases", "QuadGK", "Random", "SparseArrays", "SparseMatricesCSR", "StaticArrays", "Test", "WriteVTK"]
-git-tree-sha1 = "290f0539a047ab5be21d6bbcf5e430515228a4ee"
-repo-rev = "master"
-repo-url = "https://github.com/gridap/Gridap.jl.git"
+git-tree-sha1 = "82423f2343c8d71a1baf6db787586c792536b9f0"
 uuid = "56d4f2e9-7ea1-5844-9cf6-b9c51ca7ce8e"
-version = "0.17.17"
+version = "0.17.18"
+
+[[deps.GridapPardiso]]
+deps = ["Gridap", "Libdl", "SparseArrays", "SparseMatricesCSR"]
+git-tree-sha1 = "c29f2db4a09170cc3ccbf6a7d8d61e200ce4773c"
+repo-rev = "master"
+repo-url = "https://github.com/gridap/GridapPardiso.jl.git"
+uuid = "34aa2546-dee6-11e9-014e-739fa02ec06f"
+version = "0.7.0"
 
 [[deps.Inflate]]
 git-tree-sha1 = "5cd07aab533df5170988219191dfad0519391428"
@@ -283,9 +290,9 @@ version = "0.1.3"
 
 [[deps.IntelOpenMP_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "0cb9352ef2e01574eeebdb102948a58740dcaf83"
+git-tree-sha1 = "ad37c091f7d7daf900963171600d7c1c5c3ede32"
 uuid = "1d5cc7b8-4909-519e-a0f8-d0f5ad9712d0"
-version = "2023.1.0+0"
+version = "2023.2.0+0"
 
 [[deps.InteractiveUtils]]
 deps = ["Markdown"]
@@ -303,10 +310,10 @@ uuid = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 version = "0.4.33"
 
 [[deps.JLLWrappers]]
-deps = ["Preferences"]
-git-tree-sha1 = "abc9885a7ca2052a736a600f7fa66209f96506e1"
+deps = ["Artifacts", "Preferences"]
+git-tree-sha1 = "7e5d6779a1e09a36db2a7b6cff50942a0a7d0fca"
 uuid = "692b3bcd-3c85-4b1f-b108-f13ce0eb3210"
-version = "1.4.1"
+version = "1.5.0"
 
 [[deps.JSON]]
 deps = ["Dates", "Mmap", "Parsers", "Unicode"]
@@ -370,9 +377,9 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[deps.LogExpFunctions]]
 deps = ["DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
-git-tree-sha1 = "c3ce8e7420b3a6e071e0fe4745f5d4300e37b13f"
+git-tree-sha1 = "5ab83e1679320064c29e8973034357655743d22d"
 uuid = "2ab3a3ac-af41-5b50-aa03-7779005ae688"
-version = "0.3.24"
+version = "0.3.25"
 
     [deps.LogExpFunctions.extensions]
     LogExpFunctionsChainRulesCoreExt = "ChainRulesCore"
@@ -389,15 +396,15 @@ uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
 [[deps.MKL_jll]]
 deps = ["Artifacts", "IntelOpenMP_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "Pkg"]
-git-tree-sha1 = "154d7aaa82d24db6d8f7e4ffcfe596f40bff214b"
+git-tree-sha1 = "eb006abbd7041c28e0d16260e50a24f8f9104913"
 uuid = "856f044c-d86e-5d09-b602-aeab76dc8ba7"
-version = "2023.1.0+0"
+version = "2023.2.0+0"
 
 [[deps.MacroTools]]
 deps = ["Markdown", "Random"]
-git-tree-sha1 = "42324d08725e200c23d4dfb549e0d5d89dede2d2"
+git-tree-sha1 = "9ee1618cbf5240e6d4e0371d6f24065083f60c48"
 uuid = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
-version = "0.5.10"
+version = "0.5.11"
 
 [[deps.Markdown]]
 deps = ["Base64"]
@@ -495,9 +502,9 @@ version = "1.9.2"
 
 [[deps.PolynomialBases]]
 deps = ["ArgCheck", "AutoHashEquals", "FFTW", "FastGaussQuadrature", "LinearAlgebra", "Requires", "SimpleUnPack", "SpecialFunctions"]
-git-tree-sha1 = "b6a02c79b22a5642eed205318da472ca57f4a7de"
+git-tree-sha1 = "cdbccb62a2c0722ecf0731a756a28109a559ffad"
 uuid = "c74db56a-226d-5e98-8bb0-a6049094aeea"
-version = "0.4.18"
+version = "0.4.19"
 
 [[deps.PrecompileTools]]
 deps = ["Preferences"]
@@ -595,9 +602,9 @@ version = "0.6.7"
 
 [[deps.SpecialFunctions]]
 deps = ["IrrationalConstants", "LogExpFunctions", "OpenLibm_jll", "OpenSpecFun_jll"]
-git-tree-sha1 = "7beb031cf8145577fbccacd94b8a8f4ce78428d3"
+git-tree-sha1 = "e2cfc4012a19088254b3950b85c3c1d8882d864d"
 uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
-version = "2.3.0"
+version = "2.3.1"
 
     [deps.SpecialFunctions.extensions]
     SpecialFunctionsChainRulesCoreExt = "ChainRulesCore"
