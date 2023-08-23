@@ -14,17 +14,20 @@ using Algoim: lsbuffer, lsbufferφ, lsbuffer∇φ
 
 using Gridap.Helpers
 using Gridap.ReferenceFEs
-using Gridap.Arrays: collect1d, CompressedArray
-using Gridap.Geometry: get_cartesian_descriptor, Grid, get_reffes
+using Gridap.Arrays: collect1d, CompressedArray, Table
 using Gridap.Adaptivity
 using Gridap.Fields: testitem
 using Gridap.CellData
 using Gridap.CellData: GenericCellField, get_data
 using Gridap.CellData: _point_to_cell_cache, _point_to_cell!
-using Gridap.Geometry: get_faces, get_grid_topology
+using Gridap.Geometry
 
 using GridapEmbedded.Interfaces
+using GridapEmbedded.Interfaces: Simplex
 using GridapEmbedded.AgFEM: _aggregate_by_threshold_barrier
+
+using MiniQhull
+using FillArrays
 
 import Algoim: AlgoimCallLevelSetFunction
 import Algoim: normal
@@ -285,5 +288,54 @@ function compute_normal_displacement(
 end
 
 export compute_normal_displacement
+
+abstract type QhullType end
+
+struct DelaunayTrian <: QhullType end
+const delaunaytrian = DelaunayTrian()
+
+struct ConvexHull <: QhullType end
+const convexhull = ConvexHull()
+
+get_flags(::QhullType) = @abstractmethod
+get_flags(::DelaunayTrian) = "qhull d Qt Qbb Qc Qz"
+get_flags(::ConvexHull) = "qhull Qt Qc"
+
+get_dimension(::QhullType,dim) = @abstractmethod
+get_dimension(::DelaunayTrian,dim) = dim
+get_dimension(::ConvexHull,dim) = dim-1
+
+import Gridap.Visualization: visualization_data
+
+function visualization_data(meas::Measure,filename;cellfields=Dict(),qhulltype=DelaunayTrian())
+  node_coordinates = collect(Iterators.flatten(meas.quad.cell_point.values))
+  grid = _to_grid(node_coordinates,qhulltype)
+  ndata = Dict()
+  for (k,v) in cellfields
+    ndata[k] = lazy_map(v,node_coordinates)
+  end
+  visualization_data(grid,filename,nodaldata=ndata)
+end
+
+function visualization_data(meas::Vector{<:Measure},filename;cellfields=Dict(),qhulltype=DelaunayTrian())
+  node_coordinates = vcat(map(m->collect(Iterators.flatten(m.quad.cell_point.values)),meas)...)
+  grid = _to_grid(node_coordinates,qhulltype)
+  ndata = Dict()
+  for (k,v) in cellfields
+    ndata[k] = lazy_map(v,node_coordinates)
+  end
+  visualization_data(grid,filename,nodaldata=ndata)
+end
+
+function _to_grid(node_coordinates::Vector{<:Point{Dp,Tp}},qhulltype) where {Dp,Tp}
+  d = get_dimension(qhulltype,Dp)
+  connectivity = delaunay(reinterpret(node_coordinates),get_flags(qhulltype))[1:(d+1),:]
+  cell_node_ids = Table(collect(eachcol(connectivity)))
+  reffes = [LagrangianRefFE(Float64,Simplex(Val{d}()),1)]
+  cell_types = collect(Fill(Int8(1),length(cell_node_ids)))
+  UnstructuredGrid(node_coordinates,cell_node_ids,reffes,cell_types)
+end
+
+export delaunaytrian, convexhull
 
 end # module

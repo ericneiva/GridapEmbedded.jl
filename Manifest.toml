@@ -2,7 +2,7 @@
 
 julia_version = "1.9.2"
 manifest_format = "2.0"
-project_hash = "3f1a3b0f4c6dc741b99b08a531ad2e73332eb05b"
+project_hash = "73b9e4932cad033e03c07d1a8ce123095a6838d3"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -271,17 +271,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.Gridap]]
 deps = ["AbstractTrees", "BSON", "BlockArrays", "Combinatorics", "DataStructures", "DocStringExtensions", "FastGaussQuadrature", "FileIO", "FillArrays", "ForwardDiff", "JLD2", "JSON", "LineSearches", "LinearAlgebra", "NLsolve", "NearestNeighbors", "PolynomialBases", "QuadGK", "Random", "SparseArrays", "SparseMatricesCSR", "StaticArrays", "Test", "WriteVTK"]
-git-tree-sha1 = "82423f2343c8d71a1baf6db787586c792536b9f0"
+git-tree-sha1 = "13a08b78001b54b64dc7d3faaa5a340424c68a33"
 uuid = "56d4f2e9-7ea1-5844-9cf6-b9c51ca7ce8e"
-version = "0.17.18"
-
-[[deps.GridapPardiso]]
-deps = ["Gridap", "Libdl", "SparseArrays", "SparseMatricesCSR"]
-git-tree-sha1 = "c29f2db4a09170cc3ccbf6a7d8d61e200ce4773c"
-repo-rev = "master"
-repo-url = "https://github.com/gridap/GridapPardiso.jl.git"
-uuid = "34aa2546-dee6-11e9-014e-739fa02ec06f"
-version = "0.7.0"
+version = "0.17.19"
 
 [[deps.Inflate]]
 git-tree-sha1 = "5cd07aab533df5170988219191dfad0519391428"
@@ -377,9 +369,9 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[deps.LogExpFunctions]]
 deps = ["DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
-git-tree-sha1 = "5ab83e1679320064c29e8973034357655743d22d"
+git-tree-sha1 = "7d6dd4e9212aebaeed356de34ccf262a3cd415aa"
 uuid = "2ab3a3ac-af41-5b50-aa03-7779005ae688"
-version = "0.3.25"
+version = "0.3.26"
 
     [deps.LogExpFunctions.extensions]
     LogExpFunctionsChainRulesCoreExt = "ChainRulesCore"
@@ -508,9 +500,9 @@ version = "0.4.19"
 
 [[deps.PrecompileTools]]
 deps = ["Preferences"]
-git-tree-sha1 = "9673d39decc5feece56ef3940e5dafba15ba0f81"
+git-tree-sha1 = "03b4c25b43cb84cee5c90aa9b5ea0a78fd848d2f"
 uuid = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
-version = "1.1.2"
+version = "1.2.0"
 
 [[deps.Preferences]]
 deps = ["TOML"]

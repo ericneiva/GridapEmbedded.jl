@@ -8,4 +8,6 @@ using Test
 
 @testset "ClosestPoint" begin include("ClosestPointTests.jl") end
 
+@testset "Visualization" begin include("VisualizationTests.jl") end
+
 end # module
