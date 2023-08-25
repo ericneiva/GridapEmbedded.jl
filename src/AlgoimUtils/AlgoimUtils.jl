@@ -40,6 +40,13 @@ export Quadrature
 export is_cell_active
 export restrict_measure
 export aggregate_narrow_band
+export init_bboxes
+export fill_cpp_data
+export fill_cpp_data_raw
+export compute_closest_point_projections
+export compute_normal_displacement
+export delaunaytrian
+export convexhull
 
 struct Algoim <: QuadratureName end
 const algoim = Algoim()
@@ -232,30 +239,123 @@ function init_bboxes(cell_to_coords,cut_measure::Measure)
   bgcell_to_cbboxes
 end
 
-export init_bboxes
+function compute_closest_point_projections(Ω::Triangulation,φ;
+    cppdegree::Int=2,trim::Bool=false,limitstol::Float64=1.0e-8)
+  compute_closest_point_projections(get_active_model(Ω),φ,
+    cppdegree=cppdegree,trim=trim,limitstol=limitstol)
+end
 
 function compute_closest_point_projections(model::CartesianDiscreteModel,
-                                           φ::AlgoimCallLevelSetFunction,
-                                           num_refinements::Int;
-                                           cppdegree::Int=2,limitstol::Float64=1.0e-8)
-  ( num_refinements > 1 ) && begin
-    model = refine(model,num_refinements)
-    @error "Need to map nodes from lexicographic order to VEF order"
-  end
+                                           φ::AlgoimCallLevelSetFunction;
+                                           cppdegree::Int=2,
+                                           trim::Bool=false,
+                                           limitstol::Float64=1.0e-8)
   cdesc = get_cartesian_descriptor(model)
   partition = Int32[cdesc.partition...]
   xmin = cdesc.origin
   xmax = xmin + Point(cdesc.sizes .* partition)
-  fill_cpp_data(φ,partition,xmin,xmax,cppdegree,limitstol)
+  fill_cpp_data(φ,partition,xmin,xmax,cppdegree,trim,limitstol)
 end
 
-function compute_closest_point_projections(Ω::Triangulation,φ,num_refinements;cppdegree::Int=2,limitstol::Float64=1.0e-8)
-  compute_closest_point_projections(get_active_model(Ω),φ,num_refinements,cppdegree=cppdegree,limitstol=limitstol)
+function compute_closest_point_projections(fespace::FESpace,
+                                           φ::AlgoimCallLevelSetFunction,
+                                           order::Int;
+                                           cppdegree::Int=2,
+                                           trim::Bool=false,
+                                           limitstol::Float64=1.0e-8)
+  trian = get_triangulation(fespace)
+  model = get_active_model(trian)
+  # TO-ANSWER: Do I need the rmodel in this scope or not?
+  rmodel = refine(model,order)
+  cps = compute_closest_point_projections(
+    rmodel,φ,order,cppdegree=cppdegree,trim=trim,limitstol=limitstol)
+  msg = "Is the FE space order the same as the input order?"
+  @assert length(cps) == num_free_dofs(fespace) msg
+  cps = node_to_dof_order(cps,fespace,rmodel,order)
 end
 
-export fill_cpp_data
-export fill_cpp_data_raw
-export compute_closest_point_projections
+function compute_closest_point_projections(model::AdaptedDiscreteModel,
+                                           φ::AlgoimCallLevelSetFunction,
+                                           order::Int;
+                                           cppdegree::Int=2,
+                                           trim::Bool=false,
+                                           limitstol::Float64=1.0e-8)
+  reffe = ReferenceFE(lagrangian,Float64,order)
+  rfespace = TestFESpace(model,reffe)
+  _φ = φ.φ
+  _rφ = interpolate_everywhere(φ.φ,rfespace)
+  rφ = AlgoimCallLevelSetFunction(_rφ,∇(_rφ)) # Changing global buffer
+  cdesc = get_cartesian_descriptor(get_model(model))
+  partition = Int32[cdesc.partition...]
+  xmin = cdesc.origin
+  xmax = xmin + Point(cdesc.sizes .* partition)
+  cps = fill_cpp_data(rφ,partition,xmin,xmax,cppdegree,trim,limitstol)
+  φ = AlgoimCallLevelSetFunction(_φ,∇(_φ)) # Restore global buffer
+  cps
+end
+
+function node_to_dof_order(cps::AbstractVector{<:Point{D,T}},
+                           fespace::FESpace,
+                           rmodel::AdaptedDiscreteModel,
+                           order::Int) where {D,T}
+  cdesc = get_cartesian_descriptor(get_model(rmodel))
+  partition = cdesc.partition
+  orders = tfill(order,Val{D}())
+  ones = tfill(1,Val{D}())
+  range = CartesianIndices(orders.+1) .- CartesianIndex(ones) # 0-based
+  ldof_to_lnode = get_ldof_to_lnode(orders,D)
+  o2n_faces_map = rmodel.glue.o2n_faces_map
+  node_partition = partition .+ 1
+  ncells = num_cells(rmodel.parent)
+  cell_node_ids = lazy_map(1:ncells) do cellid
+    anchor_node = o2n_faces_map[cellid][1]
+    node_ijk = CartesianIndices(partition)[anchor_node]
+    range_cis = node_ijk .+ range
+    node_ids = LinearIndices(node_partition)[range_cis]
+    node_ids[ldof_to_lnode]
+  end
+  cell_dofs_ids = fespace.cell_dofs_ids
+  c1 = array_cache(fespace.cell_dofs_ids)
+  c2 = array_cache(cell_node_ids)
+  ncps = similar(cps)
+  for cellid in 1:ncells
+    dof_ids = getindex!(c1,cell_dofs_ids,cellid)
+    node_ids = getindex!(c2,cell_node_ids,cellid)
+    ncps[dof_ids] = cps[node_ids]
+  end
+  ncps
+end
+
+function get_ldof_to_lnode(orders,D)
+
+  # Generate indices of n-faces and order s.t.
+  # (1) dimension-increasing (2) lexicographic
+  bin_rang_nfaces = tfill(0:1,Val{D}())
+  bin_ids_nfaces = vec(collect(Iterators.product(bin_rang_nfaces...)))
+  sum_bin_ids_nfaces = sum.(bin_ids_nfaces)
+  bin_ids_nfaces = permute!(bin_ids_nfaces,sortperm(sum_bin_ids_nfaces))
+
+  # Generate LIs of basis funs s.t. order by n-faces
+  lids_b = LinearIndices(Tuple([orders[i]+1 for i=1:D]))
+
+  eet = eltype(eltype(bin_ids_nfaces))
+  f(x) = Tuple( x[i] == one(eet) ? (0:0) : (1:orders[i]:(orders[i]+1)) for i in 1:length(x) )
+  g(x) = Tuple( x[i] == one(eet) ? (2:orders[i]) : (0:0) for i in 1:length(x) )
+  rang_nfaces = map(f,bin_ids_nfaces)
+  rang_own_dofs = map(g,bin_ids_nfaces)
+
+  perm = Int64[]
+  for i = 1:length(bin_ids_nfaces)
+    cis_nfaces = CartesianIndices(rang_nfaces[i])
+    cis_own_dofs = CartesianIndices(rang_own_dofs[i])
+    for ci in cis_nfaces
+      ci = ci .+ cis_own_dofs
+      perm = vcat(perm,reshape(lids_b[ci],length(ci)))
+    end
+  end
+
+  perm
+end
 
 function compute_normal_displacement(
     cps::AbstractVector{<:Point},
@@ -263,6 +363,7 @@ function compute_normal_displacement(
     fun,
     dt::Float64,
     Ω::Triangulation)
+  # Note that cps must be (scalar) DoF-numbered, not lexicographic-numbered
   searchmethod = KDTreeSearch()
   cache1 = _point_to_cell_cache(searchmethod,Ω)
   x_to_cell(x) = _point_to_cell!(cache1, x)
@@ -286,8 +387,6 @@ function compute_normal_displacement(
   end
   disps
 end
-
-export compute_normal_displacement
 
 abstract type QhullType end
 
@@ -335,7 +434,5 @@ function _to_grid(node_coordinates::Vector{<:Point{Dp,Tp}},qhulltype) where {Dp,
   cell_types = collect(Fill(Int8(1),length(cell_node_ids)))
   UnstructuredGrid(node_coordinates,cell_node_ids,reffes,cell_types)
 end
-
-export delaunaytrian, convexhull
 
 end # module

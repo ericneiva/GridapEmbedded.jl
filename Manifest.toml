@@ -35,7 +35,7 @@ weakdeps = ["StaticArrays"]
 
 [[deps.Algoim]]
 deps = ["CxxWrap", "LinearAlgebra", "StaticArrays", "algoimWrapper_jll"]
-git-tree-sha1 = "376015a1db4c0d17bfe923802f0f21ccdb6467f8"
+git-tree-sha1 = "51da310d527c7421cca49cf5077020c250ed9b4e"
 repo-rev = "main"
 repo-url = "https://github.com/ericneiva/Algoim.jl.git"
 uuid = "0eb9048c-21de-4c7a-bfac-056de1940b74"

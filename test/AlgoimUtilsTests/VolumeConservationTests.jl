@@ -41,7 +41,7 @@ function run_case(n::Int,degree::Int,cppdegree::Int)
   dΩ = Measure(Ω,vquad,data_domain_style=PhysicalDomain())
   vol_1 = ∑(∫(1)dΩ)
 
-  cps = compute_closest_point_projections(Ω,phi,order,cppdegree=cppdegree)
+  cps = compute_closest_point_projections(Ω,phi,cppdegree=cppdegree)
 
   reffeᶜ = ReferenceFE(lagrangian,VectorValue{2,Float64},order)
   W = TestFESpace(Ω,reffeᶜ)
