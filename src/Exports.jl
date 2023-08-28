@@ -61,5 +61,6 @@ end
 @publish AlgoimUtils compute_normal_displacement
 @publish AlgoimUtils delaunaytrian
 @publish AlgoimUtils convexhull
+@publish AlgoimUtils node_to_dof_order
 
 @publish MomentFittedQuadratures momentfitted

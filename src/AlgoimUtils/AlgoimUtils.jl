@@ -48,6 +48,8 @@ export compute_normal_displacement
 export delaunaytrian
 export convexhull
 
+export node_to_dof_order
+
 struct Algoim <: QuadratureName end
 const algoim = Algoim()
 
@@ -294,10 +296,11 @@ function compute_closest_point_projections(model::AdaptedDiscreteModel,
   cps
 end
 
-function node_to_dof_order(cps::AbstractVector{<:Point{D,T}},
+function node_to_dof_order(cps,
                            fespace::FESpace,
                            rmodel::AdaptedDiscreteModel,
-                           order::Int) where {D,T}
+                           order::Int)
+  D = num_dims(rmodel)
   cdesc = get_cartesian_descriptor(get_model(rmodel))
   partition = cdesc.partition
   orders = tfill(order,Val{D}())
