@@ -45,10 +45,9 @@ export fill_cpp_data
 export fill_cpp_data_raw
 export compute_closest_point_projections
 export compute_normal_displacement
+export compute_distance_fe_function
 export delaunaytrian
 export convexhull
-
-export node_to_dof_order
 
 struct Algoim <: QuadratureName end
 const algoim = Algoim()
@@ -389,6 +388,26 @@ function compute_normal_displacement(
     end
   end
   disps
+end
+
+_dist(x,y) = begin
+  sign = norm(x) > norm(y) ? -1 : 1
+  sign * √( (x[1]-y[1])^2 + (x[2]-y[2])^2 )
+end
+
+function compute_distance_fe_function(
+    bgmodel::CartesianDiscreteModel,
+    fespace::FESpace,
+    φ::AlgoimCallLevelSetFunction,
+    order::Int;
+    cppdegree::Int=2)
+  cps = compute_closest_point_projections(
+    fespace,φ,order,cppdegree=cppdegree)
+  rmodel = refine(bgmodel,order)
+  cos = get_node_coordinates(rmodel)
+  cos = node_to_dof_order(cos,fespace,rmodel,order)
+  dists = lazy_map(_dist,cps,cos)
+  FEFunction(fespace,dists)
 end
 
 abstract type QhullType end
