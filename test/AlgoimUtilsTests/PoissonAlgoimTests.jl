@@ -24,7 +24,7 @@ function run_poisson(domain,cells,order,solution_degree)
   Ωᵃ,dΩᵃ = TriangulationAndMeasure(Ω,vquad)
   squad = Quadrature(algoim,phi,degree)
   _,dΓ = TriangulationAndMeasure(Ω,squad)
-  n_Γ(x) = normal(phi,x) # If declare as field, PosNeg Error
+  n_Γ = normal(phi,Ω)
 
   reffe = ReferenceFE(lagrangian,Float64,order)
   V = TestFESpace(Ωᵃ,reffe,conformity=:H1,dirichlet_tags="boundary")
