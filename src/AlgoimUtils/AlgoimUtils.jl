@@ -10,8 +10,6 @@ import Base.prod
 import Algoim: to_array
 @inline to_array(x::Point{N,T}) where {N,T} = collect(x.data)
 
-using Algoim: lsbuffer, lsbufferφ, lsbuffer∇φ
-
 using Gridap.Helpers
 using Gridap.ReferenceFEs
 using Gridap.Arrays: collect1d, CompressedArray, Table
@@ -29,6 +27,8 @@ using GridapEmbedded.AgFEM: _aggregate_by_threshold_barrier
 using MiniQhull
 using FillArrays
 
+import Algoim: CachedLevelSetValue
+import Algoim: CachedLevelSetGradient
 import Algoim: AlgoimCallLevelSetFunction
 import Algoim: normal
 import Gridap.ReferenceFEs: Quadrature
@@ -52,6 +52,19 @@ export convexhull
 struct Algoim <: QuadratureName end
 const algoim = Algoim()
 
+(φ::CachedLevelSetValue{<:CellField})(p,i::Float32) = begin
+  _p = Point(p)
+  (carr,cgetindex,ceval) = φ.c
+  evaluate!(ceval,getindex!(cgetindex,carr,Int(i)),_p)
+end
+
+(φ::CachedLevelSetGradient{<:CellField})(p,i::Float32) = begin
+  _p = Point(p)
+  (carr,cgetindex,ceval) = φ.c
+  _val = evaluate!(ceval,getindex!(cgetindex,carr,Int(i)),_p)
+  ConstCxxRef(to_uvector(to_array(_val)))
+end
+
 function AlgoimCallLevelSetFunction(φ::CellField,∇φ::CellField)
   φtrian = get_triangulation(φ)
   ∇φtrian = get_triangulation(∇φ)
@@ -61,23 +74,7 @@ function AlgoimCallLevelSetFunction(φ::CellField,∇φ::CellField)
   cell∇φ = get_array(∇φ)
   cache_φ = (cellφ,array_cache(cellφ),return_cache(testitem(cellφ),xφ))
   cache_∇φ = (cell∇φ,array_cache(cell∇φ),return_cache(testitem(cell∇φ),x∇φ))
-  update_lsbuffer!(cache_φ,cache_∇φ)
   AlgoimCallLevelSetFunction{typeof(φ),typeof(∇φ),typeof(cache_φ),typeof(cache_∇φ)}(φ,∇φ,cache_φ,cache_∇φ)
-end
-
-function update_lsbuffer!(cache_φ::Tuple,cache_∇φ::Tuple) 
-  cppφ(p,i::Float32) = begin
-    _p = Point(to_const_array(p))
-    (carr,cgetindex,ceval) = cache_φ
-    evaluate!(ceval,getindex!(cgetindex,carr,Int(i)),_p)
-  end
-  cpp∇φ(p,i::Float32) = begin
-    _p = Point(to_const_array(p))
-    (carr,cgetindex,ceval) = cache_∇φ
-    _val = evaluate!(ceval,getindex!(cgetindex,carr,Int(i)),_p)
-    ConstCxxRef(to_uvector(to_array(_val)))
-  end
-  lsbuffer[] = (φ=cppφ, ∇φ=cpp∇φ)
 end
 
 function normal(phi::AlgoimCallLevelSetFunction,x::AbstractVector{<:Point},cell_id::Int=1)
@@ -95,36 +92,15 @@ function normal(ls::AlgoimCallLevelSetFunction{<:CellField,<:CellField},x::Point
   gx/norm(gx)
 end
 
-function Quadrature(trian::Grid,::Algoim,args...;kwargs...)
-  Quadrature(Val{num_dims(trian)}(),trian,algoim,args...;kwargs...)
-end
-
-function Quadrature(::Val{2},trian,::Algoim,args...;kwargs...)
+function Quadrature(trian::Grid,::Algoim,phi::LevelSetFunction,degree::Int;kwargs...)
   ctype_polytope = map(get_polytope,get_reffes(trian))
   @notimplementedif !all(map(is_n_cube,ctype_polytope))
   cell_to_coords = get_cell_coordinates(trian)
   cell_to_bboxes = collect1d(lazy_map(a->(a[1],a[end]),cell_to_coords))
-  cpp_f = @safe_cfunction(lsbufferφ, Float64, (ConstCxxRef{AlgoimUvector{Float64,2}},Float32))
-  cpp_g = @safe_cfunction(lsbuffer∇φ, ConstCxxRef{AlgoimUvector{Float64,2}}, (ConstCxxRef{AlgoimUvector{Float64,2}},Float32))
-  safecls = SafeCFunctionLevelSet{Int32(2)}(cpp_f,cpp_g)
+  jls = JuliaFunctionLevelSet(phi,Val{num_dims(trian)}())
   cell_to_quad = map(enumerate(cell_to_bboxes)) do (cell_id,bbox)
     bbmin, bbmax = bbox
-    Quadrature(cell_id,bbmin,bbmax,safecls,args...;kwargs...)
-  end
-  CompressedArray(cell_to_quad,1:length(cell_to_quad))
-end
-
-function Quadrature(::Val{3},trian,::Algoim,args...;kwargs...)
-  ctype_polytope = map(get_polytope,get_reffes(trian))
-  @notimplementedif !all(map(is_n_cube,ctype_polytope))
-  cell_to_coords = get_cell_coordinates(trian)
-  cell_to_bboxes = collect1d(lazy_map(a->(a[1],a[end]),cell_to_coords))
-  cpp_f = @safe_cfunction(lsbufferφ, Float64, (ConstCxxRef{AlgoimUvector{Float64,3}},Float32))
-  cpp_g = @safe_cfunction(lsbuffer∇φ, ConstCxxRef{AlgoimUvector{Float64,3}}, (ConstCxxRef{AlgoimUvector{Float64,3}},Float32))
-  safecls = SafeCFunctionLevelSet{Int32(3)}(cpp_f,cpp_g)
-  cell_to_quad = map(enumerate(cell_to_bboxes)) do (cell_id,bbox)
-    bbmin, bbmax = bbox
-    Quadrature(cell_id,bbmin,bbmax,safecls,args...;kwargs...)
+    Quadrature(cell_id,bbmin,bbmax,jls,phi,degree;kwargs...)
   end
   CompressedArray(cell_to_quad,1:length(cell_to_quad))
 end
@@ -132,11 +108,11 @@ end
 function Quadrature(cell_id::Int,
                     xmin::Point{N,T},
                     xmax::Point{N,T},
-                    safecls::LevelSetFunction,
+                    jls::LevelSetFunction,
                     phi::LevelSetFunction,
                     degree::Int;
                     phase::Int=CUT) where {N,T}
-  coords, weights = fill_quad_data(safecls,phi,xmin,xmax,phase,degree,cell_id)
+  coords, weights = fill_quad_data(jls,phi,xmin,xmax,phase,degree,cell_id)
   GenericQuadrature(coords,weights,"Algoim quadrature of degree $degree")
 end
 
@@ -285,14 +261,12 @@ function compute_closest_point_projections(model::AdaptedDiscreteModel,
   rfespace = TestFESpace(model,reffe)
   _φ = φ.φ
   _rφ = interpolate_everywhere(φ.φ,rfespace)
-  rφ = AlgoimCallLevelSetFunction(_rφ,∇(_rφ)) # Changing global buffer
+  rφ = AlgoimCallLevelSetFunction(_rφ,∇(_rφ))
   cdesc = get_cartesian_descriptor(get_model(model))
   partition = Int32[cdesc.partition...]
   xmin = cdesc.origin
   xmax = xmin + Point(cdesc.sizes .* partition)
-  cps = fill_cpp_data(rφ,partition,xmin,xmax,cppdegree,trim,limitstol)
-  φ = AlgoimCallLevelSetFunction(_φ,∇(_φ)) # Restore global buffer
-  cps
+  fill_cpp_data(rφ,partition,xmin,xmax,cppdegree,trim,limitstol)
 end
 
 function node_to_dof_order(cps,
