@@ -105,6 +105,22 @@ function Quadrature(trian::Grid,::Algoim,phi::LevelSetFunction,degree::Int;kwarg
   CompressedArray(cell_to_quad,1:length(cell_to_quad))
 end
 
+function Quadrature(trian::Grid,::Algoim,
+                    phi1::LevelSetFunction,phi2::LevelSetFunction,
+                    degree::Int;kwargs...)
+  ctype_polytope = map(get_polytope,get_reffes(trian))
+  @notimplementedif !all(map(is_n_cube,ctype_polytope))
+  cell_to_coords = get_cell_coordinates(trian)
+  cell_to_bboxes = collect1d(lazy_map(a->(a[1],a[end]),cell_to_coords))
+  jls1 = JuliaFunctionLevelSet(phi1,Val{num_dims(trian)}())
+  jls2 = JuliaFunctionLevelSet(phi2,Val{num_dims(trian)}())
+  cell_to_quad = map(enumerate(cell_to_bboxes)) do (cell_id,bbox)
+    bbmin, bbmax = bbox
+    Quadrature(cell_id,bbmin,bbmax,jls1,jls2,phi1,phi2,degree;kwargs...)
+  end
+  CompressedArray(cell_to_quad,1:length(cell_to_quad))
+end
+
 function Quadrature(cell_id::Int,
                     xmin::Point{N,T},
                     xmax::Point{N,T},
@@ -113,6 +129,21 @@ function Quadrature(cell_id::Int,
                     degree::Int;
                     phase::Int=CUT) where {N,T}
   coords, weights = fill_quad_data(jls,phi,xmin,xmax,phase,degree,cell_id)
+  GenericQuadrature(coords,weights,"Algoim quadrature of degree $degree")
+end
+
+function Quadrature(cell_id::Int,
+                    xmin::Point{N,T},
+                    xmax::Point{N,T},
+                    jls1::LevelSetFunction,
+                    jls2::LevelSetFunction,
+                    phi1::LevelSetFunction,
+                    phi2::LevelSetFunction,
+                    degree::Int;
+                    phase1::Int=IN,
+                    phase2::Int=IN) where {N,T}
+  coords, weights = fill_quad_data(jls1,jls2,phi1,phi2,xmin,xmax,
+                                   phase1,phase2,degree,cell_id)
   GenericQuadrature(coords,weights,"Algoim quadrature of degree $degree")
 end
 
