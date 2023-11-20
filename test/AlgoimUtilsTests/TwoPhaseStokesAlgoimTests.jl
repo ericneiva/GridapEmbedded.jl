@@ -147,7 +147,9 @@ function steady_state(n::Int,w::Float64,νˡ::Float64,νˢ::Float64,γ::Float64)
 
 end
 
-function dynamic(n::Int,w::Float64,νˡ::Float64,νˢ::Float64,γ::Float64,Δt₀::Float64)
+function dynamic(n::Int,w::Float64,
+                 νˡ::Float64,νˢ::Float64,γ::Float64,
+                 t₀::Float64,Δt₀::Float64,T::Float64)
 
   pmin = Point(-1.5,-2.5)
   pmax = Point( 3.5, 2.5)
@@ -162,16 +164,14 @@ function dynamic(n::Int,w::Float64,νˡ::Float64,νˢ::Float64,γ::Float64,Δt�
   degree = order == 1 ? 3 : 2*order
 
   R = 0.12
-  φ(x) = 1.0 - ( ( x[1]*x[1] + x[2]*x[2] ) / R^2 )
-  reffeᵠ = ReferenceFE(lagrangian,Float64,order+1)
-  Vbg = TestFESpace(Ω,reffeᵠ)
+  c₀ = Point(-1.0,1.0)
 
   # Buffer of active model and integration objects
   buffer = Ref{Any}((Ωˡ=nothing,Ωˢ=nothing,
                      dΩˡ=nothing,dΩˢ=nothing,
                      dΓ=nothing,n_Γ=nothing,
                      aggsˡ=nothing,aggsˢ=nothing,
-                     φ₋=nothing,cp₋=nothing,t=nothing))
+                     φ₋=nothing,c₋=nothing,t=nothing))
 
   function update_buffer!(t,dt,v₋₂)
 
@@ -179,19 +179,16 @@ function dynamic(n::Int,w::Float64,νˡ::Float64,νˢ::Float64,γ::Float64,Δt�
       return true
     else
 
-      if buffer[].φ₋ === nothing
-        __φ₋ = AlgoimCallLevelSetFunction(φ,∇(φ))
-        _φ₋ = compute_distance_fe_function(model,Vbg,__φ₋,order+1,cppdegree=3)
+      if buffer[].c₋ === nothing
+        c₋ = c₀
       else
-        cp₋₂ = buffer[].cp₋
-        φ₋₂ = buffer[].φ₋
-        ϕ₋ = compute_displacement(cp₋₂,φ₋₂,v₋₂,dt,Ω)
-        ϕ₋ = get_free_dof_values(φ₋₂.φ) - ϕ₋
-        _φ₋ = FEFunction(Vbg,ϕ₋)
+        c₋ = buffer[].c₋
+        c₋ = c₋ + dt * v₋₂
       end
 
-      φ₋ = AlgoimCallLevelSetFunction(_φ₋,∇(_φ₋))
-      cp₋ = compute_closest_point_projections(Vbg,φ₋,order+1,cppdegree=3)
+      φ(x) = 1.0 - ( ( (x[1]-c₋[1])*(x[1]-c₋[1]) + 
+                       (x[2]-c₋[2])*(x[2]-c₋[2]) ) / R^2 )
+      φ₋ = AlgoimCallLevelSetFunction(φ,∇(φ))
 
       lquad = Quadrature(algoim,φ₋,degree,phase=IN)
       Ωˡ,dΩˡ,cell_to_is_liquid = TriangulationAndMeasure(Ω,lquad)
@@ -208,7 +205,7 @@ function dynamic(n::Int,w::Float64,νˡ::Float64,νˢ::Float64,γ::Float64,Δt�
 
       buffer[] = (Ωˡ=Ωˡ,Ωˢ=Ωˢ,dΩˡ=dΩˡ,dΩˢ=dΩˢ,
                   dΓ=dΓ,n_Γ=n_Γ,aggsˡ=aggsˡ,aggsˢ=aggsˢ,
-                  φ₋=φ₋,cp₋=cp₋,t=t)
+                  c₋=c₋,t=t)
       return true
 
     end
@@ -238,6 +235,8 @@ function dynamic(n::Int,w::Float64,νˡ::Float64,νˢ::Float64,γ::Float64,Δt�
     aggsˡ = buffer[].aggsˡ
     aggsˢ = buffer[].aggsˢ
 
+    cₜ = buffer[].c₋
+
     Vˡstd = TestFESpace(Ωˡ,reffeᵘ,dirichlet_tags=["inlet"])
     Vˡser = TestFESpace(Ωˡ,reffeˢ,conformity=:L2)
     Qˡstd = TestFESpace(Ωˡ,reffeᵖ)
@@ -252,7 +251,7 @@ function dynamic(n::Int,w::Float64,νˡ::Float64,νˢ::Float64,γ::Float64,Δt�
     Qˢ = AgFEMSpace(Qˢstd,aggsˢ)  
     K = ConstantFESpace(model)
   
-    uᵢ(x) = VectorValue(w*(1.0-x[2]*x[2]),0.0)
+    uᵢ(x) = VectorValue(w*(6.25-x[2]*x[2]),0.0)
     Uˡ = TrialFESpace(Vˡ,[uᵢ])
     Pˡ = TrialFESpace(Qˡ)
     Uˢ = TrialFESpace(Vˢ)
@@ -262,14 +261,13 @@ function dynamic(n::Int,w::Float64,νˡ::Float64,νˢ::Float64,γ::Float64,Δt�
     Y = MultiFieldFESpace([Vˡ,Qˡ,K,Vˢ,Qˢ,K])
     X = MultiFieldFESpace([Uˡ,Pˡ,L,Uˢ,Pˢ,L])
 
-    X,Y,dΩˡ,dΩˢ,Ωˡ,Ωˢ,dΓ,n_Γ
+    X,Y,dΩˡ,dΩˢ,Ωˡ,Ωˢ,dΓ,n_Γ,cₜ
 
   end
 
-  t₀ = 0.0
   Δt = Δt₀
 
-  X,Y,dΩˡ,dΩˢ,Ωˡ,Ωˢ,dΓ,n_Γ = update_all!(t₀,Δt,VectorValue(0.0,0.0))
+  X,Y,dΩˡ,dΩˢ,Ωˡ,Ωˢ,dΓ,n_Γ,cₜ = update_all!(t₀,Δt,VectorValue(0.0,0.0))
 
   wˡ = CellField(νˢ/(νˡ+νˢ),Ω)
   wˢ = CellField(νˡ/(νˡ+νˢ),Ω)
@@ -320,34 +318,57 @@ function dynamic(n::Int,w::Float64,νˡ::Float64,νˢ::Float64,γ::Float64,Δt�
   xh = FEFunction(X,x)
   uhl, phl, _, uhs, phs, _ = xh
 
-  _A = get_matrix(op)
-  _b = get_vector(op)
-  _x = get_free_dof_values(xh)
-  _r = _A*_x - _b
-  nr = norm(_r)
-  nb = norm(_b)
-  nx = norm(_x)
-  # @show nr, nr/nb, nr/nx
-  tol_warn  = 1.0e-10
-  if nr > tol_warn && nr/nb > tol_warn && nr/nx > tol_warn
-    @warn "Solver not accurate"
-  end
+  # _A = get_matrix(op)
+  # _b = get_vector(op)
+  # _x = get_free_dof_values(xh)
+  # _r = _A*_x - _b
+  # nr = norm(_r)
+  # nb = norm(_b)
+  # nx = norm(_x)
+  # # @show nr, nr/nb, nr/nx
+  # tol_warn  = 1.0e-10
+  # if nr > tol_warn && nr/nb > tol_warn && nr/nx > tol_warn
+  #   @warn "Solver not accurate"
+  # end
 
-  # colors = color_aggregates(aggsˡ,model)
-  # writevtk(Ω,"res_bg_l",celldata=["aggregate"=>aggsˡ,"color"=>colors])
-  # writevtk(Ω,"res_bg_s",celldata=["aggregate"=>aggsˢ,"color"=>colors])
-  writevtk(Ωˡ,"res_l",cellfields=["uhl"=>uhl,"phl"=>phl])
-  writevtk(dΩˢ,"res_s",cellfields=["uhs"=>uhs,"phs"=>phs])
-  writevtk(dΓ,"res_gam",cellfields=["uhl"=>uhl,"uhs"=>uhs],qhulltype=convexhull)
-  # nh = interpolate_everywhere(n_Γ,Vˡstd)  
-  # σn = νˡ*(ε(uhl)⋅nh) # - phl*nh
-  # writevtk(dΓ,"res_gam",cellfields=["uhl"=>uhl,"phl"=>phl,"sn"=>σn],qhulltype=convexhull)
+  i = 0
+  t = t₀
 
-  X,Y,dΩˡ,dΩˢ,Ωˡ,Ωˢ,dΓ,n_Γ = update_all!(t₀+Δt,Δt,uhs)
+  writevtk(Ωˡ,"res_l_$i",cellfields=["uhl"=>uhl,"phl"=>phl])
+  writevtk([dΩˢ,dΓ],"res_s_$i",cellfields=["uhs"=>uhs,"phs"=>phs])
+  writevtk(dΓ,"res_gam_$i",cellfields=["uhl"=>uhl,"uhs"=>uhs],qhulltype=convexhull)
+
+  while t < T
+
+    i = i + 1
+    t = t + Δt
+
+    @info "Time step $i, time $t and time step $Δt"
   
-  writevtk(Ωˡ,"res_l_2")
-  writevtk(dΩˢ,"res_s_2")
-  writevtk(dΓ,"res_gam_2",qhulltype=convexhull)
+    ω = ( ∑( ∫( uhs )dΓ ) / ∑( ∫( 1.0 )dΓ ) )
+    @show ω,uhs(cₜ),norm(ω-uhs(cₜ))
+    @assert norm(ω-uhs(cₜ)) < 1.0e-03
+
+    X,Y,dΩˡ,dΩˢ,Ωˡ,Ωˢ,dΓ,n_Γ,cₜ = update_all!(t,Δt,ω)
+
+    assem = SparseMatrixAssembler(SymSparseMatrixCSR{1,Float64,Int},Vector{Float64},X,Y)
+    op = AffineFEOperator(a,l,X,Y,assem)
+
+    A = get_matrix(op)
+    b = get_vector(op)
+    x = similar(b)
+
+    ss = symbolic_setup(ps, A)
+    ns = numerical_setup(ss, A)
+    solve!(x, ns, b)
+    xh = FEFunction(X,x)
+    uhl, phl, _, uhs, phs, _ = xh
+
+    writevtk(Ωˡ,"res_l_$i",cellfields=["uhl"=>uhl,"phl"=>phl])
+    writevtk([dΩˢ,dΓ],"res_s_$i",cellfields=["uhs"=>uhs,"phs"=>phs])
+    writevtk(dΓ,"res_gam_$i",cellfields=["uhl"=>uhl,"uhs"=>uhs],qhulltype=convexhull)
+
+  end
 
 end
 
@@ -356,10 +377,12 @@ w  = 1.0e-1
 νˡ = 1.0e-1
 νˢ = 1.0e+2
 γ  = 1.0e-1 # Scale with νˢ
-Δt = 1.0
+t₀ = 0.0
+Δt = 0.1
+T  = 3.0
 
 @info "Values: n = $n, w = $w, νˡ = $νˡ, νˢ = $νˢ, γ = $γ"
 
-dynamic(n,w,νˡ,νˢ,γ,Δt)
+dynamic(n,w,νˡ,νˢ,γ,t₀,Δt,T)
 
 end # module
