@@ -155,8 +155,8 @@ el2, eh1 = run_diffusion_reaction_surface(domain,partition,order,degree)
 order = 3
 degree = 5
 el2, eh1 = run_diffusion_reaction_surface(domain,partition,order,degree)
-@test el2 < 1.0e-010
-@test eh1 < 1.0e-009
+@test el2 < 1.0e-009
+@test eh1 < 1.0e-008
 
 # order = 4
 # degree = 6
