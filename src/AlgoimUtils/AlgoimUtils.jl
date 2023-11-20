@@ -44,6 +44,7 @@ export init_bboxes
 export fill_cpp_data
 export fill_cpp_data_raw
 export compute_closest_point_projections
+export compute_displacement
 export compute_normal_displacement
 export compute_distance_fe_function
 export delaunaytrian
@@ -290,7 +291,6 @@ function compute_closest_point_projections(model::AdaptedDiscreteModel,
                                            limitstol::Float64=1.0e-8)
   reffe = ReferenceFE(lagrangian,Float64,order)
   rfespace = TestFESpace(model,reffe)
-  _φ = φ.φ
   _rφ = interpolate_everywhere(φ.φ,rfespace)
   rφ = AlgoimCallLevelSetFunction(_rφ,∇(_rφ))
   cdesc = get_cartesian_descriptor(get_model(model))
@@ -395,9 +395,54 @@ function compute_normal_displacement(
   disps
 end
 
-_dist(x,y) = begin
-  sign = norm(x) > norm(y) ? -1 : 1
-  sign * √( (x[1]-y[1])^2 + (x[2]-y[2])^2 )
+
+function compute_displacement(
+    cps::AbstractVector{<:Point},
+    phi::AlgoimCallLevelSetFunction,
+    fun,
+    dt::Float64,
+    Ω::Triangulation)
+  # Note that cps must be (scalar) DoF-numbered, not lexicographic-numbered
+  searchmethod = KDTreeSearch()
+  cache1 = _point_to_cell_cache(searchmethod,Ω)
+  x_to_cell(x) = _point_to_cell!(cache1, x)
+  point_to_cell = lazy_map(x_to_cell, cps)
+  cell_to_points, _ = make_inverse_table(point_to_cell, num_cells(Ω))
+  cell_to_xs = lazy_map(Broadcasting(Reindex(cps)), cell_to_points)
+  cell_point_xs = CellPoint(cell_to_xs, Ω, PhysicalDomain())
+  fun_xs = evaluate(fun,cell_point_xs)
+  ∇φ_xs = evaluate(phi.∇φ,cell_point_xs)
+  cell_point_disp = lazy_map(Broadcasting(⋅),fun_xs,∇φ_xs)
+  cache_vals = array_cache(cell_point_disp)
+  cache_ctop = array_cache(cell_to_points)
+  disps = zeros(Float64,length(cps))
+  for cell in 1:length(cell_to_points)
+    pts = getindex!(cache_ctop,cell_to_points,cell)
+    vals = getindex!(cache_vals,cell_point_disp,cell)
+    for (i,pt) in enumerate(pts)
+      val = vals[i]
+      disps[pt] = dt * val
+    end
+  end
+  disps
+end
+
+signed_distance(φ::Function,x,y) = sign(φ(y))*norm(x-y)
+
+signed_distance(φ::T,x,y) where {T<:Number} = sign(φ)*norm(x-y)
+
+function _compute_signed_distance(
+    φ::AlgoimCallLevelSetFunction{<:Function,<:Function},
+    cps::Vector{<:Point},cos::Matrix{<:Point})
+  _dist(x,y) = signed_distance(φ.φ,x,y)
+  lazy_map(_dist,cps,cos)
+end
+
+function _compute_signed_distance(
+    φ::AlgoimCallLevelSetFunction{<:CellField,<:CellField},
+    cps::Vector{<:Point},cos::Matrix{<:Point})
+  φs = get_free_dof_values(φ.φ)
+  lazy_map(signed_distance,φs,cps,cos)
 end
 
 function compute_distance_fe_function(
@@ -411,7 +456,7 @@ function compute_distance_fe_function(
   rmodel = refine(bgmodel,order)
   cos = get_node_coordinates(rmodel)
   cos = node_to_dof_order(cos,fespace,rmodel,order)
-  dists = lazy_map(_dist,cps,cos)
+  dists = _compute_signed_distance(φ,cps,cos) 
   FEFunction(fespace,dists)
 end
 

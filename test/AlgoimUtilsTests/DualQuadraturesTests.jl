@@ -1,4 +1,4 @@
-module AlgoimInterfaceTests
+module DualQuadraturesTests
 
 using Test
 using Gridap
