@@ -166,10 +166,10 @@ function TriangulationAndMeasure(Ωbg::Triangulation,quad::Tuple)
   msg = "TriangulationAndMeasure can only receive the background triangulation"
   @notimplementedif num_cells(get_background_model(Ωbg)) != num_cells(Ωbg) msg
   dΩbg = Measure(Ωbg,quad,data_domain_style=PhysicalDomain())
-  # RMK: This is a hack, but algoim interface does not let you 
-  # know if a (given) cell intersects the interior of the level 
-  # set. The hack consists in inferring this from the size of 
-  # each quadrature. I do not expect this hack implies a lot of 
+  # RMK: This is a hack, but algoim interface does not let you
+  # know if a (given) cell intersects the interior of the level
+  # set. The hack consists in inferring this from the size of
+  # each quadrature. I do not expect this hack implies a lot of
   # extra operations with regards to the proper way to do it.
   cell_to_is_active = is_cell_active(dΩbg)
   Ωᵃ = Triangulation(Ωbg,cell_to_is_active)
@@ -196,7 +196,7 @@ function aggregate(bgtrian,cell_to_is_active,cell_to_is_cut,in_or_out;threshold=
   cell_to_faces = get_faces(topo,D,D-1)
   face_to_cells = get_faces(topo,D-1,D)
   # A hack follows to avoid constructing the actual facet_to_inoutcut array
-  facet_to_inoutcut = fill(in_or_out,num_faces(model,D-1)) 
+  facet_to_inoutcut = fill(in_or_out,num_faces(model,D-1))
 
   _aggregate_by_threshold_barrier(
     threshold,cell_to_unit_cut_meas,facet_to_inoutcut,cell_to_inoutcut,
@@ -223,7 +223,7 @@ function aggregate_narrow_band(bgtrian,cell_to_is_narrow,cell_to_active,cell_to_
   cell_to_faces = get_faces(topo,D,D-1)
   face_to_cells = get_faces(topo,D-1,D)
   # A hack follows to avoid constructing the actual facet_to_inoutcut array
-  facet_to_inoutcut = fill(in_or_out,num_faces(model,D-1)) 
+  facet_to_inoutcut = fill(in_or_out,num_faces(model,D-1))
 
   _aggregate_by_threshold_barrier(
     threshold,cell_to_unit_cut_meas,facet_to_inoutcut,cell_to_inoutcut,
@@ -423,7 +423,7 @@ function compute_distance_fe_function(
   rmodel = refine(bgmodel,order)
   cos = get_node_coordinates(rmodel)
   cos = node_to_dof_order(cos,fespace,rmodel,order)
-  dists = _compute_signed_distance(φ,cps,cos) 
+  dists = _compute_signed_distance(φ,cps,cos)
   FEFunction(fespace,dists)
 end
 
@@ -450,7 +450,9 @@ function visualization_data(meas::Measure,filename;cellfields=Dict(),qhulltype=D
   grid = _to_grid(node_coordinates,qhulltype)
   ndata = Dict()
   for (k,v) in cellfields
-    ndata[k] = lazy_map(v,node_coordinates)
+    pts = get_cell_points(meas)
+    eval = evaluate(v,pts)
+    ndata[k] = collect(Iterators.flatten(eval))
   end
   visualization_data(grid,filename,nodaldata=ndata)
 end
@@ -460,7 +462,9 @@ function visualization_data(meas::Vector{<:Measure},filename;cellfields=Dict(),q
   grid = _to_grid(node_coordinates,qhulltype)
   ndata = Dict()
   for (k,v) in cellfields
-    ndata[k] = lazy_map(v,node_coordinates)
+    pts = map(m->get_cell_points(m),meas)
+    eval = map(p->evaluate(v,p),pts)
+    ndata[k] = vcat(map(e->collect(Iterators.flatten(e)),eval)...)
   end
   visualization_data(grid,filename,nodaldata=ndata)
 end
