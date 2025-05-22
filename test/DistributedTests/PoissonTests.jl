@@ -139,7 +139,85 @@ function remotes_geometry(ranks,parts,cells)
   bgmodel,geo
 end
 
+function main_cutfem(distribute,parts;
+  threshold=1,
+  n=8,
+  cells=(n,n),
+  geometry=:circle)
 
+  ranks = distribute(LinearIndices((prod(parts),)))
 
+  u(x) = x[1] - x[2]
+  f(x) = -Δ(u)(x)
+  ud(x) = u(x)
+
+  geometries = Dict(
+    :circle => circle_geometry,
+    :remotes => remotes_geometry,
+  )
+
+  bgmodel,geo = geometries[geometry](ranks,parts,cells)
+
+  D = 2
+  cell_meas = map(get_cell_measure∘Triangulation,local_views(bgmodel))
+  meas = map(first,cell_meas) |> PartitionedArrays.getany
+  h = meas^(1/D)
+
+  cutgeo = cut(bgmodel,geo)
+
+  Ω_bg = Triangulation(bgmodel)
+  Ω_act = Triangulation(cutgeo,ACTIVE)
+  Ω = Triangulation(cutgeo,PHYSICAL)
+  Γ = EmbeddedBoundary(cutgeo)
+  Γg = GhostSkeleton(cutgeo)
+
+  n_Γ = get_normal_vector(Γ)
+  n_Γg = get_normal_vector(Γg)
+
+  order = 1
+  degree = 2*order
+  dΩ = Measure(Ω,degree)
+  dΓ = Measure(Γ,degree)
+  dΓg = Measure(Γg,degree)
+
+  reffe = ReferenceFE(lagrangian,Float64,order)
+
+  V = FESpace(Ω_act,reffe)
+  U = TrialFESpace(V)
+
+  γd = 10.0
+  γg = 0.1
+
+  a(u,v) =
+    ∫( ∇(v)⋅∇(u) ) * dΩ +
+    ∫( (γd/h)*v*u  - v*(n_Γ⋅∇(u)) - (n_Γ⋅∇(v))*u ) * dΓ +
+    ∫( (γg*h)*jump(n_Γg⋅∇(v))*jump(n_Γg⋅∇(u)) ) * dΓg
+
+  l(v) =
+    ∫( v*f ) * dΩ +
+    ∫( (γd/h)*v*ud - (n_Γ⋅∇(v))*ud ) * dΓ
+
+  op = AffineFEOperator(a,l,U,V)
+  uh = solve(op)
+
+  e = u - uh
+
+  l2(u) = sqrt(sum( ∫( u*u )*dΩ ))
+  h1(u) = sqrt(sum( ∫( u*u + ∇(u)⋅∇(u) )*dΩ ))
+
+  el2 = l2(e)
+  eh1 = h1(e)
+  ul2 = l2(uh)
+  uh1 = h1(uh)
+
+  # path = mktempdir()
+  # writevtk(Ω,joinpath(path,"trian_O"),cellfields=["uh"=>uh,"eh"=>e])
+  # writevtk(Γ,joinpath(path,"trian_G"))
+  writevtk(Ω,"trian_O",cellfields=["uh"=>uh,"eh"=>e])
+  writevtk(Γ,"trian_G")
+  @test el2/ul2 < 1.e-8
+  @test eh1/uh1 < 1.e-7
+
+end
 
 end # module
