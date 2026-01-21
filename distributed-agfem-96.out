@@ -1,0 +1,541 @@
+[1.745e-01 s in MAIN] New agg - ncells 48 - run 1 - 2 ghost layers
+[1.595e-01 s in MAIN] New agg - ncells 48 - run 2 - 2 ghost layers
+[1.412e-01 s in MAIN] New agg - ncells 48 - run 3 - 2 ghost layers
+[1.527e-01 s in MAIN] New agg - ncells 48 - run 4 - 2 ghost layers
+[1.999e-01 s in MAIN] New agg - ncells 48 - run 1 - 3 ghost layers
+[1.541e-01 s in MAIN] New agg - ncells 48 - run 2 - 3 ghost layers
+[1.284e-01 s in MAIN] New agg - ncells 48 - run 3 - 3 ghost layers
+[1.377e-01 s in MAIN] New agg - ncells 48 - run 4 - 3 ghost layers
+[1.049e-01 s in MAIN] New agg - ncells 48 - run 1 - 4 ghost layers
+[1.126e-01 s in MAIN] New agg - ncells 48 - run 2 - 4 ghost layers
+[1.146e-01 s in MAIN] New agg - ncells 48 - run 3 - 4 ghost layers
+[1.215e-01 s in MAIN] New agg - ncells 48 - run 4 - 4 ghost layers
+[1.232e-01 s in MAIN] New agg - ncells 48 - run 1 - 5 ghost layers
+[1.081e-01 s in MAIN] New agg - ncells 48 - run 2 - 5 ghost layers
+[9.603e-02 s in MAIN] New agg - ncells 48 - run 3 - 5 ghost layers
+[1.152e-01 s in MAIN] New agg - ncells 48 - run 4 - 5 ghost layers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+Section                                              max         min         avg
+────────────────────────────────────────────────────────────────────────────────
+New agg - ncells 48 - run 1 - 3 ghost layers   2.580e-01   1.993e-01   2.114e-01
+New agg - ncells 48 - run 2 - 2 ghost layers   2.077e-01   1.590e-01   1.668e-01
+New agg - ncells 48 - run 1 - 2 ghost layers   2.036e-01   1.741e-01   1.805e-01
+New agg - ncells 48 - run 2 - 3 ghost layers   1.824e-01   1.534e-01   1.588e-01
+New agg - ncells 48 - run 4 - 3 ghost layers   1.769e-01   1.116e-01   1.302e-01
+New agg - ncells 48 - run 4 - 2 ghost layers   1.720e-01   1.079e-01   1.257e-01
+New agg - ncells 48 - run 3 - 3 ghost layers   1.625e-01   1.282e-01   1.391e-01
+New agg - ncells 48 - run 4 - 4 ghost layers   1.594e-01   1.212e-01   1.289e-01
+New agg - ncells 48 - run 1 - 5 ghost layers   1.459e-01   1.133e-01   1.303e-01
+New agg - ncells 48 - run 3 - 2 ghost layers   1.413e-01   1.058e-01   1.153e-01
+New agg - ncells 48 - run 3 - 4 ghost layers   1.385e-01   1.146e-01   1.234e-01
+New agg - ncells 48 - run 4 - 5 ghost layers   1.315e-01   1.067e-01   1.206e-01
+New agg - ncells 48 - run 2 - 5 ghost layers   1.273e-01   1.078e-01   1.118e-01
+New agg - ncells 48 - run 1 - 4 ghost layers   1.252e-01   1.047e-01   1.070e-01
+New agg - ncells 48 - run 2 - 4 ghost layers   1.222e-01   1.122e-01   1.160e-01
+New agg - ncells 48 - run 3 - 5 ghost layers   1.207e-01   9.598e-02   1.095e-01
+────────────────────────────────────────────────────────────────────────────────
+
+[2.522e+00 s in MAIN] New agg - ncells 3072 - run 1 - 2 ghost layers
+[1.148e+00 s in MAIN] New agg - ncells 3072 - run 2 - 2 ghost layers
+[1.708e+00 s in MAIN] New agg - ncells 3072 - run 3 - 2 ghost layers
+[1.808e+00 s in MAIN] New agg - ncells 3072 - run 4 - 2 ghost layers
+[1.750e+00 s in MAIN] New agg - ncells 3072 - run 1 - 3 ghost layers
+[1.858e+00 s in MAIN] New agg - ncells 3072 - run 2 - 3 ghost layers
+[1.740e+00 s in MAIN] New agg - ncells 3072 - run 3 - 3 ghost layers
+[2.060e+00 s in MAIN] New agg - ncells 3072 - run 4 - 3 ghost layers
+[1.967e+00 s in MAIN] New agg - ncells 3072 - run 1 - 4 ghost layers
+[2.026e+00 s in MAIN] New agg - ncells 3072 - run 2 - 4 ghost layers
+[1.953e+00 s in MAIN] New agg - ncells 3072 - run 3 - 4 ghost layers
+[1.784e+00 s in MAIN] New agg - ncells 3072 - run 4 - 4 ghost layers
+[1.759e+00 s in MAIN] New agg - ncells 3072 - run 1 - 5 ghost layers
+[1.710e+00 s in MAIN] New agg - ncells 3072 - run 2 - 5 ghost layers
+[1.963e+00 s in MAIN] New agg - ncells 3072 - run 3 - 5 ghost layers
+[1.760e+00 s in MAIN] New agg - ncells 3072 - run 4 - 5 ghost layers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────
+Section                                                max         min         avg
+──────────────────────────────────────────────────────────────────────────────────
+New agg - ncells 3072 - run 1 - 2 ghost layers   2.692e+00   1.561e+00   2.514e+00
+New agg - ncells 3072 - run 4 - 3 ghost layers   2.103e+00   5.901e-01   1.965e+00
+New agg - ncells 3072 - run 2 - 4 ghost layers   2.080e+00   7.988e-01   1.945e+00
+New agg - ncells 3072 - run 3 - 4 ghost layers   2.050e+00   7.898e-01   1.914e+00
+New agg - ncells 3072 - run 1 - 4 ghost layers   2.023e+00   5.088e-01   1.565e+00
+New agg - ncells 3072 - run 3 - 5 ghost layers   1.985e+00   8.374e-01   1.821e+00
+New agg - ncells 3072 - run 2 - 3 ghost layers   1.984e+00   4.641e-01   1.811e+00
+New agg - ncells 3072 - run 4 - 2 ghost layers   1.930e+00   4.750e-01   1.766e+00
+New agg - ncells 3072 - run 4 - 5 ghost layers   1.912e+00   3.019e-01   1.707e+00
+New agg - ncells 3072 - run 1 - 5 ghost layers   1.876e+00   3.089e-01   1.702e+00
+New agg - ncells 3072 - run 3 - 2 ghost layers   1.871e+00   2.420e-01   1.625e+00
+New agg - ncells 3072 - run 4 - 4 ghost layers   1.797e+00   2.907e-01   1.342e+00
+New agg - ncells 3072 - run 2 - 5 ghost layers   1.759e+00   2.219e-01   1.311e+00
+New agg - ncells 3072 - run 1 - 3 ghost layers   1.754e+00   2.371e-01   1.638e+00
+New agg - ncells 3072 - run 3 - 3 ghost layers   1.746e+00   4.122e-01   1.483e+00
+New agg - ncells 3072 - run 2 - 2 ghost layers   1.152e+00   2.677e-01   9.838e-01
+──────────────────────────────────────────────────────────────────────────────────
+
+[4.885e+00 s in MAIN] New agg - ncells 6144 - run 1 - 2 ghost layers
+[5.123e+00 s in MAIN] New agg - ncells 6144 - run 2 - 2 ghost layers
+[4.826e+00 s in MAIN] New agg - ncells 6144 - run 3 - 2 ghost layers
+[5.034e+00 s in MAIN] New agg - ncells 6144 - run 4 - 2 ghost layers
+[4.785e+00 s in MAIN] New agg - ncells 6144 - run 1 - 3 ghost layers
+[5.046e+00 s in MAIN] New agg - ncells 6144 - run 2 - 3 ghost layers
+[5.025e+00 s in MAIN] New agg - ncells 6144 - run 3 - 3 ghost layers
+[5.151e+00 s in MAIN] New agg - ncells 6144 - run 4 - 3 ghost layers
+[4.949e+00 s in MAIN] New agg - ncells 6144 - run 1 - 4 ghost layers
+[4.913e+00 s in MAIN] New agg - ncells 6144 - run 2 - 4 ghost layers
+[5.320e+00 s in MAIN] New agg - ncells 6144 - run 3 - 4 ghost layers
+[5.133e+00 s in MAIN] New agg - ncells 6144 - run 4 - 4 ghost layers
+[4.904e+00 s in MAIN] New agg - ncells 6144 - run 1 - 5 ghost layers
+[4.983e+00 s in MAIN] New agg - ncells 6144 - run 2 - 5 ghost layers
+[5.321e+00 s in MAIN] New agg - ncells 6144 - run 3 - 5 ghost layers
+[5.208e+00 s in MAIN] New agg - ncells 6144 - run 4 - 5 ghost layers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────
+Section                                                max         min         avg
+──────────────────────────────────────────────────────────────────────────────────
+New agg - ncells 6144 - run 3 - 5 ghost layers   5.543e+00   1.529e+00   5.090e+00
+New agg - ncells 6144 - run 3 - 4 ghost layers   5.447e+00   1.443e+00   4.971e+00
+New agg - ncells 6144 - run 4 - 5 ghost layers   5.408e+00   1.625e+00   4.971e+00
+New agg - ncells 6144 - run 4 - 4 ghost layers   5.362e+00   1.345e+00   4.860e+00
+New agg - ncells 6144 - run 4 - 2 ghost layers   5.339e+00   1.342e+00   4.831e+00
+New agg - ncells 6144 - run 4 - 3 ghost layers   5.309e+00   1.295e+00   4.788e+00
+New agg - ncells 6144 - run 2 - 2 ghost layers   5.185e+00   1.410e+00   4.927e+00
+New agg - ncells 6144 - run 3 - 3 ghost layers   5.166e+00   1.421e+00   4.810e+00
+New agg - ncells 6144 - run 2 - 5 ghost layers   5.105e+00   1.052e+00   4.656e+00
+New agg - ncells 6144 - run 2 - 3 ghost layers   5.078e+00   1.075e+00   4.603e+00
+New agg - ncells 6144 - run 2 - 4 ghost layers   5.062e+00   1.057e+00   4.599e+00
+New agg - ncells 6144 - run 1 - 4 ghost layers   5.023e+00   1.073e+00   4.581e+00
+New agg - ncells 6144 - run 1 - 2 ghost layers   4.982e+00   1.061e+00   4.669e+00
+New agg - ncells 6144 - run 1 - 5 ghost layers   4.959e+00   1.060e+00   4.643e+00
+New agg - ncells 6144 - run 1 - 3 ghost layers   4.945e+00   1.081e+00   4.548e+00
+New agg - ncells 6144 - run 3 - 2 ghost layers   4.898e+00   1.102e+00   4.602e+00
+──────────────────────────────────────────────────────────────────────────────────
+
+[1.598e+01 s in MAIN] New agg - ncells 12288 - run 1 - 2 ghost layers
+[1.614e+01 s in MAIN] New agg - ncells 12288 - run 2 - 2 ghost layers
+[1.613e+01 s in MAIN] New agg - ncells 12288 - run 3 - 2 ghost layers
+[1.594e+01 s in MAIN] New agg - ncells 12288 - run 4 - 2 ghost layers
+[1.598e+01 s in MAIN] New agg - ncells 12288 - run 1 - 3 ghost layers
+[1.609e+01 s in MAIN] New agg - ncells 12288 - run 2 - 3 ghost layers
+[1.632e+01 s in MAIN] New agg - ncells 12288 - run 3 - 3 ghost layers
+[1.620e+01 s in MAIN] New agg - ncells 12288 - run 4 - 3 ghost layers
+[1.626e+01 s in MAIN] New agg - ncells 12288 - run 1 - 4 ghost layers
+[1.633e+01 s in MAIN] New agg - ncells 12288 - run 2 - 4 ghost layers
+[1.613e+01 s in MAIN] New agg - ncells 12288 - run 3 - 4 ghost layers
+[1.616e+01 s in MAIN] New agg - ncells 12288 - run 4 - 4 ghost layers
+[1.635e+01 s in MAIN] New agg - ncells 12288 - run 1 - 5 ghost layers
+[1.639e+01 s in MAIN] New agg - ncells 12288 - run 2 - 5 ghost layers
+[1.657e+01 s in MAIN] New agg - ncells 12288 - run 3 - 5 ghost layers
+[1.642e+01 s in MAIN] New agg - ncells 12288 - run 4 - 5 ghost layers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+───────────────────────────────────────────────────────────────────────────────────
+Section                                                 max         min         avg
+───────────────────────────────────────────────────────────────────────────────────
+New agg - ncells 12288 - run 2 - 4 ghost layers   1.669e+01   3.460e+00   1.567e+01
+New agg - ncells 12288 - run 4 - 4 ghost layers   1.669e+01   3.211e+00   1.560e+01
+New agg - ncells 12288 - run 3 - 5 ghost layers   1.657e+01   3.288e+00   1.567e+01
+New agg - ncells 12288 - run 3 - 4 ghost layers   1.648e+01   3.246e+00   1.549e+01
+New agg - ncells 12288 - run 1 - 4 ghost layers   1.646e+01   3.406e+00   1.558e+01
+New agg - ncells 12288 - run 1 - 5 ghost layers   1.646e+01   3.297e+00   1.558e+01
+New agg - ncells 12288 - run 3 - 3 ghost layers   1.646e+01   3.512e+00   1.562e+01
+New agg - ncells 12288 - run 2 - 5 ghost layers   1.645e+01   3.235e+00   1.562e+01
+New agg - ncells 12288 - run 4 - 5 ghost layers   1.644e+01   3.231e+00   1.559e+01
+New agg - ncells 12288 - run 3 - 2 ghost layers   1.642e+01   3.365e+00   1.545e+01
+New agg - ncells 12288 - run 1 - 3 ghost layers   1.642e+01   3.220e+00   1.544e+01
+New agg - ncells 12288 - run 1 - 2 ghost layers   1.635e+01   3.238e+00   1.527e+01
+New agg - ncells 12288 - run 2 - 2 ghost layers   1.632e+01   3.404e+00   1.544e+01
+New agg - ncells 12288 - run 4 - 3 ghost layers   1.623e+01   3.195e+00   1.541e+01
+New agg - ncells 12288 - run 4 - 2 ghost layers   1.622e+01   3.222e+00   1.534e+01
+New agg - ncells 12288 - run 2 - 3 ghost layers   1.622e+01   3.220e+00   1.541e+01
+───────────────────────────────────────────────────────────────────────────────────
+
+
+======================================================================================
+                  Resource Usage on 2025-12-23 09:07:20:
+   Job Id:             157216562.gadi-pbs
+   Project:            kr97
+   Exit Status:        -29 (Job failed due to exceeding walltime)
+   Service Units:      97.71
+   NCPUs Requested:    96                     NCPUs Used: 96              
+                                           CPU Time Used: 15:18:50        
+   Memory Requested:   384.0GB               Memory Used: 154.14GB        
+   Walltime requested: 00:30:00            Walltime Used: 00:30:32        
+   JobFS requested:    200.0MB                JobFS used: 1.19MB          
+======================================================================================

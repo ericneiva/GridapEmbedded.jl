@@ -13,6 +13,8 @@ function run_test(procs,file)
   end
 end
 
-run_test(24,"runtests_body.jl")
+# Get the number of processes from command line arguments, default to 24
+procs = length(ARGS) > 0 ? parse(Int, ARGS[1]) : 24
+run_test(procs,"runtests_body.jl")
 
 end # module

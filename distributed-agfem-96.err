@@ -1,0 +1,397 @@
+[ Info: Parts per direction: (8, 12)
+[ Info: Cells in x direction: 48
+[ Info: Problem: asymmetric kettlebell
+[ Info: Parts per direction: (8, 12)
+[ Info: Cells in x direction: 3072
+[ Info: Problem: asymmetric kettlebell
+[ Info: Parts per direction: (8, 12)
+[ Info: Cells in x direction: 6144
+[ Info: Problem: asymmetric kettlebell
+[ Info: Parts per direction: (8, 12)
+[ Info: Cells in x direction: 12288
+[ Info: Problem: asymmetric kettlebell
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+
+[2685608] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685596] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685592] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685606] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685588] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685578] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+
+[2685579] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+
+[2685536] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685590] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685577] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+
+[2685506] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685580] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685511] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+
+[2685503] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685551] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+
+[2685615] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685521] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685576] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685598] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685519] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685538] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685581] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685543] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685509] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685594] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685586] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685527] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685610] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685600] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[2685504] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685584] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685614] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685612] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685515] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685530] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685547] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685528] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685513] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685549] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685517] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685525] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685604] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685502] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685523] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685544] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685555] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+malloc(): unsorted double linked list corrupted
+
+[3249362] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249373] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249361] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249352] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249404] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249353] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249380] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249374] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249356] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249398] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249357] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249377] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249359] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[3249400] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249407] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249389] signal 6 (-6): Aborted
+in expression starting at none:0
+
+[3249355] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249393] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249406] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249394] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249358] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249379] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249403] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249354] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249375] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249384] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249397] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249405] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249391] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249396] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249382] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249395] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249408] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249401] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249385] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249388] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249387] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249386] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249390] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249392] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249399] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249402] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249383] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249378] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249360] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249351] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249381] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[3249376] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685602] signal 6 (-6): Aborted
+in expression starting at none:0
+malloc(): unsorted double linked list corrupted
+
+[2685501] signal 6 (-6): Aborted
+in expression starting at none:0
+=>> PBS: job killed: walltime 1830 exceeded limit 1800
