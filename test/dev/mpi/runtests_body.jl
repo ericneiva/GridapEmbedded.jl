@@ -14,64 +14,64 @@ end
 
 problem = DA.disk
 
-if MPI.Comm_size(MPI.COMM_WORLD) == 4
+if MPI.Comm_size(MPI.COMM_WORLD) == 25
   with_mpi() do distribute
-    DA.run_benchmark_test(distribute,(2,2),8,2,problem)
-    for ncells_x_dir in (8,16,32,64)
+    DA.run_benchmark_test(distribute,(5,5),10,problem)
+    for ncells_x_dir in (20,40,80,160,320)
       DA.run_benchmark_test(distribute,
-                         (2,2),
-                         ncells_x_dir,
-                         problem)
+                            (5,5),
+                            ncells_x_dir,
+                            problem)
     end
   end
-elseif MPI.Comm_size(MPI.COMM_WORLD) == 24
+elseif MPI.Comm_size(MPI.COMM_WORLD) == 100
   with_mpi() do distribute
-    DA.run_benchmark_test(distribute,(4,6),24,2,problem)
-    for ncells_x_dir in (96,192,384,768,1536)
+    DA.run_benchmark_test(distribute,(10,10),20,problem)
+    for ncells_x_dir in (40,80,160,320,640)
       DA.run_benchmark_test(distribute,
-                         (4,6),
-                         ncells_x_dir,
-                         problem)
+                            (10,10),
+                            ncells_x_dir,
+                            problem)
     end
   end
-elseif MPI.Comm_size(MPI.COMM_WORLD) == 96
+elseif MPI.Comm_size(MPI.COMM_WORLD) == 400
   with_mpi() do distribute
-    DA.run_benchmark_test(distribute,(8,12),48,2,problem)
-    for ncells_x_dir in (192,384,768,1536,3072)
+    DA.run_benchmark_test(distribute,(20,20),40,problem)
+    for ncells_x_dir in (80,160,320,640,1280)
       DA.run_benchmark_test(distribute,
-                         (8,12),
-                         ncells_x_dir,
-                         problem)
+                            (20,20),
+                            ncells_x_dir,
+                            problem)
     end
   end
-elseif MPI.Comm_size(MPI.COMM_WORLD) == 384
+elseif MPI.Comm_size(MPI.COMM_WORLD) == 1600
   with_mpi() do distribute
-    DA.run_benchmark_test(distribute,(16,24),96,2,problem)
-    for ncells_x_dir in (384,768,1536,3072,6144)
+    DA.run_benchmark_test(distribute,(40,40),80,problem)
+    for ncells_x_dir in (160,320,640,1280,2560)
       DA.run_benchmark_test(distribute,
-                         (16,24),
-                         ncells_x_dir,
-                         problem)
+                            (40,40),
+                            ncells_x_dir,
+                            problem)
     end
   end
-elseif MPI.Comm_size(MPI.COMM_WORLD) == 1536
+elseif MPI.Comm_size(MPI.COMM_WORLD) == 6400
   with_mpi() do distribute
-    DA.run_benchmark_test(distribute,(32,48),192,2,problem)
-    for ncells_x_dir in (768,1536,3072,6144,12288)
+    DA.run_benchmark_test(distribute,(80,80),160,problem)
+    for ncells_x_dir in (320,640,1280,2560,5120)
       DA.run_benchmark_test(distribute,
-                         (32,48),
-                         ncells_x_dir,
-                         problem)
+                            (80,80),
+                            ncells_x_dir,
+                            problem)
     end
   end
-elseif MPI.Comm_size(MPI.COMM_WORLD) == 6144
+elseif MPI.Comm_size(MPI.COMM_WORLD) == 25600
   with_mpi() do distribute
-    DA.run_benchmark_test(distribute,(64,96),384,2,problem)
-    for ncells_x_dir in (1536,3072,6144,12288)
+    DA.run_benchmark_test(distribute,(160,160),320,problem)
+    for ncells_x_dir in (640,1280,2560,5120,10240)
       DA.run_benchmark_test(distribute,
-                         (64,96),
-                         ncells_x_dir,
-                         problem)
+                            (160,160),
+                            ncells_x_dir,
+                            problem)
     end
   end
 end

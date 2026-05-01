@@ -205,8 +205,8 @@ function run_new_distributed_aggregation(ranks,
   gids = get_cell_gids(bgmodel)
   cell_indices = partition(gids)
 
-  t = PArrays.PTimer(ranks)
-  PArrays.tic!(t,barrier=true)
+  # t = PArrays.PTimer(ranks)
+  # PArrays.tic!(t,barrier=true)
 
   strategy = AggregateCutCellsByThreshold(1.0)
   lcell_to_lroot, lcell_to_root, lcell_to_value =
@@ -215,9 +215,9 @@ function run_new_distributed_aggregation(ranks,
       aggregate(strategy,cutgeo,geo,lid_to_gid,IN)
     end |> tuple_of_arrays
 
-  PArrays.toc!(t,"New agg - local stage")
+  # PArrays.toc!(t,"New agg - local stage")
 
-  PArrays.tic!(t,barrier=true)
+  # PArrays.tic!(t,barrier=true)
 
   lcell_to_owner = map(copy∘local_to_owner,cell_indices)
   lcell_to_owner = map(lcell_to_owner,lcell_to_lroot) do lcell_to_owner,lcell_to_lroot
@@ -232,9 +232,9 @@ function run_new_distributed_aggregation(ranks,
   lcell_to_root,_ =
     find_optimal_roots!(lcell_to_root,lcell_to_value,lcell_to_owner,cell_indices);
 
-  PArrays.toc!(t,"New agg - global stage")
+  # PArrays.toc!(t,"New agg - global stage")
 
-  display(t)
+  # display(t)
 
   bgmodel,lcell_to_root
 end
