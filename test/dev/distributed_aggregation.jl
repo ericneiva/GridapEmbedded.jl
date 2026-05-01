@@ -15,7 +15,7 @@ import GridapEmbedded.LevelSetCutters: disk, sphere, popcorn, Leaf
 using MPI
 
 using Test
-using BenchmarkTools
+# using BenchmarkTools
 
 function disk(ranks, parts, nc, ng)
   geo = disk(1.0)
@@ -250,8 +250,8 @@ function run_benchmark_test(distribute,
   verbose && begin
     @info "Parts per direction: $parts"
     @info "Cells in x direction: $ncells_x_dir"
-    @info "Ghost layers: $nghost_layers"
-    @info "Problem: $(problem==symmetric_kettlebell ? "symmetric" : "asymmetric") kettlebell"
+    # @info "Ghost layers: $nghost_layers"
+    # @info "Problem: $problem"
   end
   
   # println("Benchmarking old and new distributed aggregation implementations")
