@@ -151,24 +151,10 @@ function _distributed_aggregate_by_threshold_barrier(
     tci = consistent!(pv_cellin)
     trc = consistent!(pv_root_centroid)
     trp = consistent!(pv_root_part)
-
-    PartitionedArrays.toc!(t,"Consistent at iter $iter")
-
-    PartitionedArrays.tic!(t,barrier=true)
-
     reduction!(&,all_aggregated,all_aggregated,destination=:all)
+    wait(tt); wait(tn); wait(tci); wait(trc); wait(trp);
 
-    PartitionedArrays.toc!(t,"Reduction at iter $iter")
-
-    PartitionedArrays.tic!(t,barrier=true)
-
-    wait(tt)
-    wait(tn)
-    wait(tci)
-    wait(trc)
-    wait(trp)
-
-    PartitionedArrays.toc!(t,"Wait at iter $iter")
+    PartitionedArrays.toc!(t,"Global at iter $iter")
 
     if PartitionedArrays.getany(all_aggregated)
       break
