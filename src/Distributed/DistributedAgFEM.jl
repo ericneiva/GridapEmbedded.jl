@@ -118,8 +118,16 @@ function _distributed_aggregate_by_threshold_barrier(
   c1 = map(array_cache,cell_to_faces)
   c2 = map(array_cache,face_to_cells)
 
+  ranks = map(partition(gids)) do p
+    part_id(p)
+  end
+  t = PartitionedArrays.PTimer(ranks)
+
   max_iters = 20
   for iter in 1:max_iters
+
+    PartitionedArrays.tic!(t,barrier=true)
+
     all_aggregated = _aggregate_one_step!(
       c1,c2,gids,
       cell_to_inoutcut,
@@ -134,6 +142,10 @@ function _distributed_aggregate_by_threshold_barrier(
       loc
     )
 
+    PartitionedArrays.toc!(t,"Local at iter $iter")
+
+    PartitionedArrays.tic!(t,barrier=true)
+
     tt  = consistent!(pv_touched)
     tn  = consistent!(pv_neig)
     tci = consistent!(pv_cellin)
@@ -142,10 +154,14 @@ function _distributed_aggregate_by_threshold_barrier(
     reduction!(&,all_aggregated,all_aggregated,destination=:all)
     wait(tt); wait(tn); wait(tci); wait(trc); wait(trp);
 
+    PartitionedArrays.toc!(t,"Global at iter $iter")
+
     if PartitionedArrays.getany(all_aggregated)
       break
     end
   end
+
+  display(t)
 
   cell_to_cellin, cell_to_root_part, cell_to_neig
 end
