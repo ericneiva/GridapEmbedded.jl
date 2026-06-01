@@ -9,7 +9,7 @@ repodir = joinpath(testdir,"..","..")
 
 function run_test(procs,file)
   mpiexec() do cmd
-    run(`$cmd -n $procs $(Base.julia_cmd()) --project=$repodir $(joinpath(mpidir,file))`)
+    run(`nsys profile --trace=nvtx,mpi --mpi-impl=mpich $cmd -n $procs $(Base.julia_cmd()) --project=$repodir $(joinpath(mpidir,file))`)
   end
 end
 

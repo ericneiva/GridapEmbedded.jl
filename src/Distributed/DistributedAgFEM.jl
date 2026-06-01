@@ -83,7 +83,7 @@ function _distributed_aggregate_by_threshold(threshold,cutgeo,geo,loc,facet_to_i
   )
 end
 
-function _distributed_aggregate_by_threshold_barrier(
+NVTX.@annotate "Distributed Aggregate Barrier" function _distributed_aggregate_by_threshold_barrier(
   threshold,cell_to_unit_cut_meas,facet_to_inoutcut,cell_to_inoutcut,
   loc,cell_to_coords,cell_to_faces,face_to_cells,gids
 )
@@ -134,13 +134,41 @@ function _distributed_aggregate_by_threshold_barrier(
       loc
     )
 
-    tt  = consistent!(pv_touched)
-    tn  = consistent!(pv_neig)
-    tci = consistent!(pv_cellin)
-    trc = consistent!(pv_root_centroid)
-    trp = consistent!(pv_root_part)
-    reduction!(&,all_aggregated,all_aggregated,destination=:all)
-    wait(tt); wait(tn); wait(tci); wait(trc); wait(trp);
+    NVTX.@mark "Begin global step"
+    NVTX.@range "Consistent Touched" begin
+      tt  = consistent!(pv_touched)
+    end
+    NVTX.@range "Consistent Neig" begin
+      tn  = consistent!(pv_neig)
+    end
+    NVTX.@range "Consistent Cellin" begin
+      tci = consistent!(pv_cellin)
+    end
+    NVTX.@range "Consistent Root Centroid" begin
+      trc = consistent!(pv_root_centroid)
+    end
+    NVTX.@range "Consistent Root Part" begin
+      trp = consistent!(pv_root_part)
+    end
+    NVTX.@range "Reduction" begin
+      reduction!(&,all_aggregated,all_aggregated,destination=:all)
+    end
+    NVTX.@range "Wait Touched" begin
+      wait(tt)
+    end
+    NVTX.@range "Wait Neig" begin
+      wait(tn)
+    end
+    NVTX.@range "Wait Cellin" begin
+      wait(tci)
+    end
+    NVTX.@range "Wait Root Centroid" begin
+      wait(trc)
+    end
+    NVTX.@range "Wait Root Part" begin
+      wait(trp)
+    end
+    NVTX.@mark "End global step"
 
     if PartitionedArrays.getany(all_aggregated)
       break
@@ -150,7 +178,7 @@ function _distributed_aggregate_by_threshold_barrier(
   cell_to_cellin, cell_to_root_part, cell_to_neig
 end
 
-function _aggregate_one_step!(c1,c2,gids::PRange,
+NVTX.@annotate "Local step" function _aggregate_one_step!(c1,c2,gids::PRange,
   cell_to_inoutcut,
   cell_to_touched,
   cell_to_neig,

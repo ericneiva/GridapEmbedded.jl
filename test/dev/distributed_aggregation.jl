@@ -12,7 +12,7 @@ using GridapEmbedded.Distributed: _local_aggregates
 
 import GridapEmbedded.LevelSetCutters: disk, sphere, popcorn, Leaf
 
-using MPI
+using MPI, NVTX
 
 using Test
 # using BenchmarkTools
@@ -181,7 +181,7 @@ function _global_aggregates(cell_to_lcellin,lcell_to_gcell)
   end
 end
 
-function run_old_distributed_aggregation(ranks,
+NVTX.@annotate "Old AGG" function run_old_distributed_aggregation(ranks,
                                          parts,
                                          ncells_x_dir,
                                          problem)
@@ -268,23 +268,25 @@ function run_benchmark_test(distribute,
 
   obgmodel,olcell_to_root = run_old_distributed_aggregation(
     ranks,parts,ncells_x_dir,problem)
+  outer_range = NVTX.range_start()  
   for repeat = 1:4
     PArrays.tic!(t,barrier=true)
       obgmodel,olcell_to_root = run_old_distributed_aggregation(
         ranks,parts,ncells_x_dir,problem)
     PArrays.toc!(t,"Old AGG - ncells $ncells_x_dir - run $repeat")
   end
+  NVTX.range_end(outer_range)
 
-  for nghost_layers in (2,3,4,5)
-    nbgmodel,nlcell_to_root = run_new_distributed_aggregation(
-      ranks,parts,ncells_x_dir,nghost_layers,problem)
-    for repeat = 1:4
-      PArrays.tic!(t,barrier=true)
-        nbgmodel,nlcell_to_root = run_new_distributed_aggregation(
-          ranks,parts,ncells_x_dir,nghost_layers,problem)
-      PArrays.toc!(t,"New AGG - ncells $ncells_x_dir - run $repeat - $nghost_layers ghost layers")
-    end
-  end
+  # for nghost_layers in (2,3,4,5)
+  #   nbgmodel,nlcell_to_root = run_new_distributed_aggregation(
+  #     ranks,parts,ncells_x_dir,nghost_layers,problem)
+  #   for repeat = 1:4
+  #     PArrays.tic!(t,barrier=true)
+  #       nbgmodel,nlcell_to_root = run_new_distributed_aggregation(
+  #         ranks,parts,ncells_x_dir,nghost_layers,problem)
+  #     PArrays.toc!(t,"New AGG - ncells $ncells_x_dir - run $repeat - $nghost_layers ghost layers")
+  #   end
+  # end
 
   display(t)
 
