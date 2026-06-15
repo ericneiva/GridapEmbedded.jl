@@ -4,6 +4,10 @@ using PartitionedArrays
 const PArrays = PartitionedArrays
 using MPI, NVTX
 
+NVTX.enable_gc_hooks()
+# NVTX.enable_inference_hook()
+outer_range = NVTX.range_start() 
+
 include("../distributed_aggregation.jl")
 
 const DA = DistributedAggregation
@@ -11,9 +15,6 @@ const DA = DistributedAggregation
 if ! MPI.Initialized()
   MPI.Init()
 end
-
-NVTX.enable_gc_hooks()
-# NVTX.enable_inference_hook()
 
 problem = DA.disk
 
@@ -24,7 +25,7 @@ if MPI.Comm_size(MPI.COMM_WORLD) == 4
 elseif MPI.Comm_size(MPI.COMM_WORLD) == 25
   with_mpi() do distribute
     DA.run_benchmark_test(distribute,(5,5),10,problem)
-    for ncells_x_dir in (320,640,1280)
+    for ncells_x_dir in (1280,) # (320,640,1280)
       DA.run_benchmark_test(distribute,
                             (5,5),
                             ncells_x_dir,
@@ -34,7 +35,7 @@ elseif MPI.Comm_size(MPI.COMM_WORLD) == 25
 elseif MPI.Comm_size(MPI.COMM_WORLD) == 100
   with_mpi() do distribute
     DA.run_benchmark_test(distribute,(10,10),20,problem)
-    for ncells_x_dir in (640,1280,2560)
+    for ncells_x_dir in (2560,) # (640,1280,2560)
       DA.run_benchmark_test(distribute,
                             (10,10),
                             ncells_x_dir,
@@ -44,7 +45,7 @@ elseif MPI.Comm_size(MPI.COMM_WORLD) == 100
 elseif MPI.Comm_size(MPI.COMM_WORLD) == 400
   with_mpi() do distribute
     DA.run_benchmark_test(distribute,(20,20),40,problem)
-    for ncells_x_dir in (1280,2560,5120)
+    for ncells_x_dir in (5120,) # (1280,2560,5120)
       DA.run_benchmark_test(distribute,
                             (20,20),
                             ncells_x_dir,
@@ -54,7 +55,7 @@ elseif MPI.Comm_size(MPI.COMM_WORLD) == 400
 elseif MPI.Comm_size(MPI.COMM_WORLD) == 1600
   with_mpi() do distribute
     DA.run_benchmark_test(distribute,(40,40),80,problem)
-    for ncells_x_dir in (2560,5120,10240)
+    for ncells_x_dir in (10240,) # (2560,5120,10240)
       DA.run_benchmark_test(distribute,
                             (40,40),
                             ncells_x_dir,
@@ -82,6 +83,8 @@ elseif MPI.Comm_size(MPI.COMM_WORLD) == 25600
     end
   end
 end
+
+NVTX.range_end(outer_range)
 
 # problem = DA.popcorn
 

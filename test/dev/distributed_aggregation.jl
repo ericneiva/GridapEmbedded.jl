@@ -267,15 +267,13 @@ function run_benchmark_test(distribute,
   t = PArrays.PTimer(ranks,verbose=true)
 
   obgmodel,olcell_to_root = run_old_distributed_aggregation(
-    ranks,parts,ncells_x_dir,problem)
-  outer_range = NVTX.range_start()  
+    ranks,parts,ncells_x_dir,problem) 
   for repeat = 1:4
     PArrays.tic!(t,barrier=true)
       obgmodel,olcell_to_root = run_old_distributed_aggregation(
         ranks,parts,ncells_x_dir,problem)
     PArrays.toc!(t,"Old AGG - ncells $ncells_x_dir - run $repeat")
   end
-  NVTX.range_end(outer_range)
 
   # for nghost_layers in (2,3,4,5)
   #   nbgmodel,nlcell_to_root = run_new_distributed_aggregation(
