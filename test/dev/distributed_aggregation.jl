@@ -12,7 +12,7 @@ using GridapEmbedded.Distributed: _local_aggregates
 
 import GridapEmbedded.LevelSetCutters: disk, sphere, popcorn, Leaf
 
-using MPI, NVTX
+using MPI
 
 using Test
 # using BenchmarkTools
@@ -181,15 +181,20 @@ function _global_aggregates(cell_to_lcellin,lcell_to_gcell)
   end
 end
 
-NVTX.@annotate "Old AGG" function run_old_distributed_aggregation(ranks,
+function run_old_distributed_aggregation(ranks,
                                          parts,
                                          ncells_x_dir,
-                                         problem)
+                                         problem,
+                                         repeat=1)
 
   bgmodel, geo = problem(ranks, parts, ncells_x_dir, 1)
   cutgeo = cut(bgmodel, geo)
+  t = PArrays.PTimer(ranks,verbose=true)
+  PArrays.tic!(t,barrier=true)
   strategy = AggregateCutCellsByThreshold(1.0)
   bgmodel,_,lcell_to_root = aggregate(strategy,cutgeo)
+  PArrays.toc!(t,"Old AGG - ncells $ncells_x_dir - run $repeat")
+  display(t)
   bgmodel,lcell_to_root
 end
 
@@ -197,7 +202,8 @@ function run_new_distributed_aggregation(ranks,
                                          parts,
                                          ncells_x_dir,
                                          nghost_layers,
-                                         problem)
+                                         problem,
+                                         repeat=1)
 
   bgmodel, geo = problem(ranks, parts, ncells_x_dir, nghost_layers)
   cutgeo = cut(bgmodel, geo)
@@ -205,8 +211,8 @@ function run_new_distributed_aggregation(ranks,
   gids = get_cell_gids(bgmodel)
   cell_indices = partition(gids)
 
-  # t = PArrays.PTimer(ranks)
-  # PArrays.tic!(t,barrier=true)
+  t = PArrays.PTimer(ranks)
+  PArrays.tic!(t,barrier=true)
 
   strategy = AggregateCutCellsByThreshold(1.0)
   lcell_to_lroot, lcell_to_root, lcell_to_value =
@@ -214,10 +220,6 @@ function run_new_distributed_aggregation(ranks,
       lid_to_gid = local_to_global(cell_indices)
       aggregate(strategy,cutgeo,geo,lid_to_gid,IN)
     end |> tuple_of_arrays
-
-  # PArrays.toc!(t,"New agg - local stage")
-
-  # PArrays.tic!(t,barrier=true)
 
   lcell_to_owner = map(copy∘local_to_owner,cell_indices)
   lcell_to_owner = map(lcell_to_owner,lcell_to_lroot) do lcell_to_owner,lcell_to_lroot
@@ -232,9 +234,8 @@ function run_new_distributed_aggregation(ranks,
   lcell_to_root,_ =
     find_optimal_roots!(lcell_to_root,lcell_to_value,lcell_to_owner,cell_indices);
 
-  # PArrays.toc!(t,"New agg - global stage")
-
-  # display(t)
+  PArrays.toc!(t,"New AGG - ncells $ncells_x_dir - run $repeat - $nghost_layers ghost layers")
+  display(t)
 
   bgmodel,lcell_to_root
 end
@@ -264,29 +265,21 @@ function run_benchmark_test(distribute,
   #         $ranks,$parts,$ncells_x_dir,$nghost_layers,$problem)
   # println("==============================================")
 
-  t = PArrays.PTimer(ranks,verbose=true)
-
   obgmodel,olcell_to_root = run_old_distributed_aggregation(
     ranks,parts,ncells_x_dir,problem) 
   for repeat = 1:4
-    PArrays.tic!(t,barrier=true)
-      obgmodel,olcell_to_root = run_old_distributed_aggregation(
-        ranks,parts,ncells_x_dir,problem)
-    PArrays.toc!(t,"Old AGG - ncells $ncells_x_dir - run $repeat")
+    obgmodel,olcell_to_root = run_old_distributed_aggregation(
+      ranks,parts,ncells_x_dir,problem,repeat)
   end
 
-  # for nghost_layers in (2,3,4,5)
-  #   nbgmodel,nlcell_to_root = run_new_distributed_aggregation(
-  #     ranks,parts,ncells_x_dir,nghost_layers,problem)
-  #   for repeat = 1:4
-  #     PArrays.tic!(t,barrier=true)
-  #       nbgmodel,nlcell_to_root = run_new_distributed_aggregation(
-  #         ranks,parts,ncells_x_dir,nghost_layers,problem)
-  #     PArrays.toc!(t,"New AGG - ncells $ncells_x_dir - run $repeat - $nghost_layers ghost layers")
-  #   end
-  # end
-
-  display(t)
+  for nghost_layers in (2,3,4,5)
+    nbgmodel,nlcell_to_root = run_new_distributed_aggregation(
+      ranks,parts,ncells_x_dir,nghost_layers,problem)
+    for repeat = 1:4
+      nbgmodel,nlcell_to_root = run_new_distributed_aggregation(
+        ranks,parts,ncells_x_dir,nghost_layers,problem,repeat)
+    end
+  end
 
   # ogids = get_cell_gids(obgmodel)
   # olcell_to_root = _global_aggregates(olcell_to_root,ogids)

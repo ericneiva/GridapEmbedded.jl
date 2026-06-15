@@ -1,7 +1,5 @@
 module Distributed
 
-using NVTX
-
 using Gridap
 using GridapDistributed
 using PartitionedArrays

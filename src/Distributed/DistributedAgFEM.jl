@@ -83,7 +83,7 @@ function _distributed_aggregate_by_threshold(threshold,cutgeo,geo,loc,facet_to_i
   )
 end
 
-NVTX.@annotate "Distributed Aggregate Barrier" function _distributed_aggregate_by_threshold_barrier(
+function _distributed_aggregate_by_threshold_barrier(
   threshold,cell_to_unit_cut_meas,facet_to_inoutcut,cell_to_inoutcut,
   loc,cell_to_coords,cell_to_faces,face_to_cells,gids
 )
@@ -134,23 +134,9 @@ NVTX.@annotate "Distributed Aggregate Barrier" function _distributed_aggregate_b
       loc
     )
 
-    NVTX.@range "Consistent" begin
-      tt  = consistent!(pv_touched)
-      tn  = consistent!(pv_neig)
-      tci = consistent!(pv_cellin)
-      trc = consistent!(pv_root_centroid)
-      trp = consistent!(pv_root_part)
-    end
-    NVTX.@range "Reduction" begin
-      reduction!(&,all_aggregated,all_aggregated,destination=:all)
-    end
-    NVTX.@range "Wait" begin
-      wait(tt)
-      wait(tn)
-      wait(tci)
-      wait(trc)
-      wait(trp)
-    end
+    tt  = consistent!(pv_touched); tn  = consistent!(pv_neig); tci = consistent!(pv_cellin); trc = consistent!(pv_root_centroid); trp = consistent!(pv_root_part)
+    reduction!(&,all_aggregated,all_aggregated,destination=:all)
+    wait(tt); wait(tn); wait(tci); wait(trc); wait(trp)
 
     if PartitionedArrays.getany(all_aggregated)
       break
@@ -160,7 +146,7 @@ NVTX.@annotate "Distributed Aggregate Barrier" function _distributed_aggregate_b
   cell_to_cellin, cell_to_root_part, cell_to_neig
 end
 
-NVTX.@annotate "Local step" function _aggregate_one_step!(c1,c2,gids::PRange,
+function _aggregate_one_step!(c1,c2,gids::PRange,
   cell_to_inoutcut,
   cell_to_touched,
   cell_to_neig,
@@ -308,9 +294,7 @@ function _get_cell_measure(trian1::Triangulation,trian2::Triangulation)
 end
 
 function merge_nodes(model::DistributedDiscreteModel)
-  NVTX.@range "Gen gids model w remote cells" begin
-    node_gids = get_face_gids(model,0)
-  end
+  node_gids = get_face_gids(model,0)
   cell_gids = get_cell_gids(model)
   models = map(local_views(model),local_views(node_gids)) do model,node_ids
     merge_nodes(model,node_ids)
@@ -318,7 +302,7 @@ function merge_nodes(model::DistributedDiscreteModel)
   DistributedDiscreteModel(models,cell_gids)
 end
 
-NVTX.@annotate "Merge nodes local" function merge_nodes(model::DiscreteModel,ids)
+function merge_nodes(model::DiscreteModel,ids)
   l_to_g = local_to_global(ids)
   n_global = length(global_to_local(ids))
   n_local = length(l_to_g)
@@ -344,7 +328,7 @@ NVTX.@annotate "Merge nodes local" function merge_nodes(model::DiscreteModel,ids
   UnstructuredDiscreteModel(grid)
 end
 
-NVTX.@annotate "Add remote cells" function add_remote_cells(model::DistributedDiscreteModel,remote_cells,remote_parts)
+function add_remote_cells(model::DistributedDiscreteModel,remote_cells,remote_parts)
   # Send remote gids to owners
   snd_ids = remote_parts
   snd_remotes = remote_cells
@@ -393,31 +377,29 @@ NVTX.@annotate "Add remote cells" function add_remote_cells(model::DistributedDi
   agids = add_remote_ids(gids,remote_cells,remote_parts)
   amodel = DistributedDiscreteModel(_models,agids) |> merge_nodes
 
-  NVTX.@range "Build new model" begin
-    D = num_cell_dims(model)
-    grids = map(get_grid,local_views(amodel))
-    topos = map(get_grid_topology,local_views(amodel))
-    d_to_dface_to_entity = map(topos) do topo
-      [ fill(Int32(UNSET),num_faces(topo,d)) for d in 0:D ]
-    end
-    oldtopos = map(get_grid_topology,local_views(model))
-    oldlabels = map(get_face_labeling,local_views(model))
-    for d in 0:D
-      _fill_labels!(d_to_dface_to_entity,
-                    oldlabels,
-                    oldtopos,
-                    topos,
-                    ncells,
-                    d,D,
-                    snd_lids,
-                    rgraph)
-    end
-    labels = map(d_to_dface_to_entity,oldlabels) do d_to_dface_to_entity,ol
-      FaceLabeling(d_to_dface_to_entity,ol.tag_to_entities,ol.tag_to_name)
-    end
-    models = map(UnstructuredDiscreteModel,grids,topos,labels)
-    DistributedDiscreteModel(models,agids)
+  D = num_cell_dims(model)
+  grids = map(get_grid,local_views(amodel))
+  topos = map(get_grid_topology,local_views(amodel))
+  d_to_dface_to_entity = map(topos) do topo
+    [ fill(Int32(UNSET),num_faces(topo,d)) for d in 0:D ]
   end
+  oldtopos = map(get_grid_topology,local_views(model))
+  oldlabels = map(get_face_labeling,local_views(model))
+  for d in 0:D
+    _fill_labels!(d_to_dface_to_entity,
+                  oldlabels,
+                  oldtopos,
+                  topos,
+                  ncells,
+                  d,D,
+                  snd_lids,
+                  rgraph)
+  end
+  labels = map(d_to_dface_to_entity,oldlabels) do d_to_dface_to_entity,ol
+    FaceLabeling(d_to_dface_to_entity,ol.tag_to_entities,ol.tag_to_name)
+  end
+  models = map(UnstructuredDiscreteModel,grids,topos,labels)
+  DistributedDiscreteModel(models,agids)
 end
 
 function _fill_labels!(d_to_dface_to_entity,llabels,ltopos,ntopos,nremotes,
