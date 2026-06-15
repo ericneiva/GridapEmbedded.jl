@@ -185,7 +185,7 @@ function run_old_distributed_aggregation(ranks,
                                          parts,
                                          ncells_x_dir,
                                          problem,
-                                         repeat=1)
+                                         repeat=0)
 
   bgmodel, geo = problem(ranks, parts, ncells_x_dir, 1)
   cutgeo = cut(bgmodel, geo)
@@ -203,16 +203,16 @@ function run_new_distributed_aggregation(ranks,
                                          ncells_x_dir,
                                          nghost_layers,
                                          problem,
-                                         repeat=1)
+                                         repeat=0)
 
   bgmodel, geo = problem(ranks, parts, ncells_x_dir, nghost_layers)
   cutgeo = cut(bgmodel, geo)
 
-  gids = get_cell_gids(bgmodel)
-  cell_indices = partition(gids)
-
   t = PArrays.PTimer(ranks)
   PArrays.tic!(t,barrier=true)
+
+  gids = get_cell_gids(bgmodel)
+  cell_indices = partition(gids)
 
   strategy = AggregateCutCellsByThreshold(1.0)
   lcell_to_lroot, lcell_to_root, lcell_to_value =
